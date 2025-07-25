@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schedule>
+  <tuesday>
+    <class1>
+      <title>Мат. анализ</title>
+      <type>Практика</type>
+      <weeks>Чётная, Нечётная</weeks>
+      <begin_time>10:00</begin_time>
+      <end_time>11:30</end_time>
+      <teacher>Юрова Татьяна Сергеевна</teacher>
+      <building>Кронверкский пр., д. 49, лит. А</building>
+      <classroom>2414</classroom>
+    </class1>
+    <class2>
+      <title>Лин. алгебра</title>
+      <type>Практика</type>
+      <weeks>Чётная, Нечётная</weeks>
+      <begin_time>11:40</begin_time>
+      <end_time>13:10</end_time>
+      <teacher>Ефремов Илья Дмитриевич</teacher>
+      <building>Кронверкский пр., д. 49, лит. А</building>
+      <classroom>1316</classroom>
+    </class2>
+    <class3>
+      <title>Англ. язык А2</title>
+      <type>Практика</type>
+      <weeks>Чётная, Нечётная</weeks>
+      <begin_time>15:20</begin_time>
+      <end_time>16:50</end_time>
+      <teacher>Яковлева Ольга Александровна</teacher>
+      <building>ул. Ломоносова, д. 9, лит. Е</building>
+      <classroom>3211</classroom>
+    </class3>
+    <class4>
+      <title>Англ. язык А2</title>
+      <type>Практика</type>
+      <weeks>Чётная, Нечётная</weeks>
+      <begin_time>17:00</begin_time>
+      <end_time>18:30</end_time>
+      <teacher>Яковлева Ольга Александровна</teacher>
+      <building>ул. Ломоносова, д. 9, лит. Е</building>
+      <classroom>3211</classroom>
+    </class4>
+<>
+  </tuesday>
+</>

@@ -1,0 +1,57 @@
+schedule:
+  tuesday:
+    class1:
+      title: Мат. анализ
+      type: Практика
+      weeks: Чётная, Нечётная
+      begin_time: 10:00
+      end_time: 11:30
+      teacher: Юрова Татьяна Сергеевна
+      building: Кронверкский пр., д. 49, лит. А
+      classroom: 2414
+    class2:
+      title: Лин. алгебра
+      type: Практика
+      weeks: Чётная, Нечётная
+      begin_time: 11:40
+      end_time: 13:10
+      teacher: Ефремов Илья Дмитриевич
+      building: Кронверкский пр., д. 49, лит. А
+      classroom: 1316
+    class3:
+      title: Англ. язык А2
+      type: Практика
+      weeks: Чётная, Нечётная
+      begin_time: 15:20
+      end_time: 16:50
+      teacher: Яковлева Ольга Александровна
+      building: ул. Ломоносова, д. 9, лит. Е
+      classroom: 3211
+    class4:
+      title: Англ. язык А2
+      type: Практика
+      weeks: Чётная, Нечётная
+      begin_time: 17:00
+      end_time: 18:30
+      teacher: Яковлева Ольга Александровна
+      building: ул. Ломоносова, д. 9, лит. Е
+      classroom: 3211
+  thursday:
+    class1:
+      title: История
+      type: Лекция
+      weeks: Нечётная
+      begin_time: 13:30
+      end_time: 15:00
+      teacher: Белоусов Александр Сергеевич
+      building: Кронверкский пр., д. 49, лит. А
+      classroom: 1404
+    class2:
+      title: История
+      type: Практика
+      weeks: Нечётная
+      begin_time: 17:00
+      end_time: 18:30
+      teacher: Белоусов Александр Сергеевич
+      building: Кронверкский пр., д. 49, лит. А
+      classroom: 2414

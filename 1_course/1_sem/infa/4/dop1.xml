@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schedule>
+	<tuesday>
+		<class1>
+			<title>Мат. анализ</title>
+			<type>Практика</type>
+			<weeks>Чётная, Нечётная</weeks>
+			<begin_time>600</begin_time>
+			<end_time>690</end_time>
+			<teacher>Юрова Татьяна Сергеевна</teacher>
+			<building>Кронверкский пр., д. 49, лит. А</building>
+			<classroom>2414</classroom>
+		</class1>
+		<class2>
+			<title>Лин. алгебра</title>
+			<type>Практика</type>
+			<weeks>Чётная, Нечётная</weeks>
+			<begin_time>700</begin_time>
+			<end_time>790</end_time>
+			<teacher>Ефремов Илья Дмитриевич</teacher>
+			<building>Кронверкский пр., д. 49, лит. А</building>
+			<classroom>1316</classroom>
+		</class2>
+		<class3>
+			<title>Англ. язык А2</title>
+			<type>Практика</type>
+			<weeks>Чётная, Нечётная</weeks>
+			<begin_time>920</begin_time>
+			<end_time>1010</end_time>
+			<teacher>Яковлева Ольга Александровна</teacher>
+			<building>ул. Ломоносова, д. 9, лит. Е</building>
+			<classroom>3211</classroom>
+		</class3>
+		<class4>
+			<title>Англ. язык А2</title>
+			<type>Практика</type>
+			<weeks>Чётная, Нечётная</weeks>
+			<begin_time>1020</begin_time>
+			<end_time>1110</end_time>
+			<teacher>Яковлева Ольга Александровна</teacher>
+			<building>ул. Ломоносова, д. 9, лит. Е</building>
+			<classroom>3211</classroom>
+		</class4>
+	</tuesday>
+	<thursday>
+		<class1>
+			<title>История</title>
+			<type>Лекция</type>
+			<weeks>Нечётная</weeks>
+			<begin_time>810</begin_time>
+			<end_time>900</end_time>
+			<teacher>Белоусов Александр Сергеевич</teacher>
+			<building>Кронверкский пр., д. 49, лит. А</building>
+			<classroom>1404</classroom>
+		</class1>
+		<class2>
+			<title>История</title>
+			<type>Практика</type>
+			<weeks>Нечётная</weeks>
+			<begin_time>1020</begin_time>
+			<end_time>1110</end_time>
+			<teacher>Белоусов Александр Сергеевич</teacher>
+			<building>Кронверкский пр., д. 49, лит. А</building>
+			<classroom>2414</classroom>
+		</class2>
+	</thursday>
+</schedule>
