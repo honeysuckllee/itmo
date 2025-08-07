@@ -1,0 +1,3 @@
+show
+execute_script script_help.txt
+info
