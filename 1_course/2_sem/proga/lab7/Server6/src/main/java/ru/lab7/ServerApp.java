@@ -36,9 +36,9 @@ public class ServerApp {
     private static final ExecutorService responsePool = Executors.newCachedThreadPool(); // Ответы
 
     //static final UserManager userManager = new UserManager();
-    static String dbUrl = "jdbc:postgresql://localhost:5432/studs";
-    static String dbUser = "s467922";
-    static String dbPassword = "Xyn617glEZRF363L";
+    static String dbUrl = "...";
+    static String dbUser = "...";
+    static String dbPassword = "...";
 
     public static DBUsersHandler usersHandler = new DBUsersHandler(dbUrl, dbUser, dbPassword);
     public static DBRouteHandler routeHandler = new DBRouteHandler(usersHandler.getConnection());
