@@ -259,7 +259,7 @@ function setupCheckButtonHandler() {
             //console.log("Validation successful:", validator.getMessage());
             resetForm();
             // Отправляем запрос на сервер
-            fetch(`fcgi-app/?x=${xVal}&y=${yVal}&r=${rVal}`, {
+            fetch(`http://localhost:8080/fcgi-bin/labwork1.jar?x=${xVal}&y=${yVal}&r=${rVal}`, {
                 method: 'GET',
             })
                 .then(response => {
