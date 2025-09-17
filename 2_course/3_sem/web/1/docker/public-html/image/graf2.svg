@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 -0.5 500 500" preserveAspectRatio="xMinYMin" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:grid x="0" y="0" width="43.604" height="40.626" divisions="1"/>
+    <path id="path-0" style="fill: none;" d="M 112.387 179.996 L 116.566 185.847 C 125.405 198.986 134.836 211.72 143.593 224.854"/>
+    <path id="path-1" style="fill: none;" d="M 95.112 193.648 C 119.715 213.671 130.479 223.444 140.249 233.213"/>
+    <path id="path-2" style="fill: none;" d="M 317.604375765597 139.54862945181372 L 350.0615294320333 141.62922257475012"/>
+  </defs>
+  <rect x="37.968" y="-4.837" width="503.563" height="504.337" style="fill: rgba(244, 239, 250, 0.92); stroke: rgba(232, 220, 247, 0.39); stroke-opacity: 0.67; vector-effect: non-scaling-stroke; stroke-dashoffset: -7px; stroke-width: 0px;"/>
+  <g transform="matrix(1.775545, 0, 0, 1.71592, -68.666987, -0.860553)" style="">
+    <rect x="100" y="50" width="100" height="100" style="stroke: rgb(0, 0, 0); fill-rule: evenodd; paint-order: stroke; vector-effect: non-scaling-stroke; fill: rgb(109, 61, 175);"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 150.11 145.772 L 150 154.637"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 100 145.369 L 100 154.234"/>
+    <polygon style="stroke: rgb(0, 0, 0); vector-effect: non-scaling-stroke; fill: rgb(109, 61, 175);" points="150.347 150.639 200 200 200 150"/>
+    <path style="stroke: rgb(0, 0, 0); fill: rgb(109, 61, 175);" transform="matrix(0.182394, 0, 0, 0.182728, 92.31293, 80.183367)" d="M 1138.672 382.08 A 545.342 545.342 0 0 1 592.305 929.341 L 593.333 384 Z" bx:shape="pie 593.333 384 0 545.342 89.798 180.108 1@4141d977"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 200.141 28.875 L 200 270 L 200.141 28.875 Z"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 80.36 150.147 L 320 150"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 300 144.506 L 300 155.766"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 250 145.223 L 250 155.766"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 203.669 50.032 L 195.694 50"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 204.212 100.083 L 196.429 100.117"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 195.694 200.106 L 204.212 200"/>
+    <path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 204.652 250.034 L 196.722 250"/>
+    <path style="stroke: rgb(19, 17, 17); fill: rgb(9, 9, 9); vector-effect: non-scaling-stroke;" d="M 195.191 30.239 L 205.469 30 L 200 22.969 L 195.191 30.239 Z"/>
+    <path style="stroke: rgb(19, 17, 17); fill: rgb(9, 9, 9); vector-effect: non-scaling-stroke; stroke-width: 1; transform-box: fill-box; transform-origin: 50% 50%;" d="M 318.496 153.792 L 328.774 153.553 L 323.305 146.522 L 318.496 153.792 Z" transform="matrix(0, 1, -1, 0, -0.000008, -0.000003)"/>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 27.2262px; line-height: 39.6017px; white-space: pre;" transform="matrix(0.552722, 0, 0, 0.404023, 143.128941, 83.260867)" x="320" y="140.259">x</text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 23.0302px; line-height: 33.4985px; white-space: pre;" transform="matrix(0.535465, 0, 0, 0.477634, 102.79877, 21.293206)" x="191.324" y="18.973">Y</text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 134.810429, 34.822629)" x="206.916" y="49.872">R
+</text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 222.534369, 121.393909)" x="206.916" y="49.872">R
+</text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 21.545584, 121.374332)" y="49.872" x="206.916">-R<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 131.738072, 234.64022)" y="49.872" x="206.916">-R<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 134.772816, 85.316256)" y="49.872" x="206.916">R/2<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+    <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 28px;" x="249.432" y="115.113"><tspan x="249.4320068359375" dy="1em">​</tspan></text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 169.729406, 121.316379)" y="49.872" x="206.916">R/2<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 66.223734, 121.329395)" y="49.872" x="206.916">-R/2<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+    <text style="fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 29.4789px; line-height: 77.1812px; stroke-miterlimit: 4.89; white-space: pre;" transform="matrix(0.357098, 0, 0, 0.373148, 131.409214, 184.274008)" y="49.872" x="206.916">-R/2<tspan x="206.91600036621094" dy="1em">​</tspan></text>
+  </g>
+</svg>

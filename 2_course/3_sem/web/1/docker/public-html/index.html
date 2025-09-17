@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="author" content="Хахулина Светлана Алексеевна">
+    <title>Web programming laboratory work 1</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="info">var 467922 | Хахулина Светлана Алексеевна | P3206</div>
+    </header>
+
+    <main class="container">
+        <div class="graph">
+            <img src="image/graf3.svg" width="500" height="500">
+        </div>
+
+        <div class="form" id="input-form">
+            <form>
+                <div class="input-group">
+                    <label for="x">X:</label>
+                    <div id="x" class="radio-group">
+                        <label><input type="radio" name="x" value="-3">-3</label>
+                        <label><input type="radio" name="x" value="-2">-2</label>
+                        <label><input type="radio" name="x" value="-1">-1</label>
+                        <label><input type="radio" name="x" value="0">0</label>
+                        <label><input type="radio" name="x" value="1">1</label>
+                        <label><input type="radio" name="x" value="2">2</label>
+                        <label><input type="radio" name="x" value="3">3</label>
+                        <label><input type="radio" name="x" value="4">4</label>
+                        <label><input type="radio" name="x" value="5">5</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="y">Y:</label>
+                    <input type="text" id="y" name="y">
+                </div>
+                <div class="input-group">
+                    <label for="r">R:</label>
+                    <div id="r" class="radio-group">
+                        <label><input type="radio" name="r" value="1">1</label>
+                        <label><input type="radio" name="r" value="2">2</label>
+                        <label><input type="radio" name="r" value="3">3</label>
+                        <label><input type="radio" name="r" value="4">4</label>
+                        <label><input type="radio" name="r" value="5">5</label>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <input type="submit" value="Проверка">
+                    <input type="button" id="clear-btn" value="Очистить таблицу">
+                </div>
+                 <div id="flash-message" class="flash-message"></div>
+            </form>
+        </div>
+
+        <div class="table">
+            <table class="resultTable">
+                <thead>
+                  <tr>
+                    <th>X</th>
+                    <th>Y</th>
+                    <th>R</th>
+                    <th>Попал/ не попал</th>
+                    <th>Время</th>
+                    <th>Время работы скрипта</th>
+                  </tr>
+                </thead>
+                <tbody id="output">
+                </tbody>
+              </table>     
+        </div>
+    </main>
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
