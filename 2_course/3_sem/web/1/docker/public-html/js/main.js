@@ -11,12 +11,6 @@ export default class InputValidator {
             return;
         }
 
-        if (!(yVal >= -3 && yVal <= 3)) {
-            this.message = "Значение Y должно быть в интервале от -3 до 3";
-            this.responseCode = 0;
-            return;
-        }
-
         if (![1, 2, 3, 4, 5].includes(rVal)) {
             this.message = "Значение R должно быть: 1, 2, 3, 4, 5";
             this.responseCode = 0;
@@ -35,6 +29,60 @@ export default class InputValidator {
         return this.message;
     }
 }
+
+function compareNumberStrings(a, b) {
+    const normalize = (s) => {
+        s = s.trim();
+        if (!s.includes('.')) return s;
+        let [intPart, fracPart] = s.split('.');
+        fracPart = fracPart.replace(/0+$/, ''); // убираем конечные нули
+        return fracPart === '' ? intPart : `${intPart}.${fracPart}`;
+    };
+
+    a = normalize(a);
+    b = normalize(b);
+
+    const aIsNegative = a.startsWith('-');
+    const bIsNegative = b.startsWith('-');
+
+    if (aIsNegative && !bIsNegative) return -1;
+    if (!aIsNegative && bIsNegative) return 1;
+
+    const aAbs = aIsNegative ? a.slice(1) : a;
+    const bAbs = bIsNegative ? b.slice(1) : b;
+
+    const [aInt, aFrac = ''] = aAbs.split('.');
+    const [bInt, bFrac = ''] = bAbs.split('.');
+    if (aInt.length !== bInt.length) {
+        return (aIsNegative ? -1 : 1) * (aInt.length - bInt.length);
+    }
+    if (aInt !== bInt) {
+        return (aIsNegative ? -1 : 1) * (aInt > bInt ? 1 : -1);
+    }
+
+    const maxLength = Math.max(aFrac.length, bFrac.length);
+    for (let i = 0; i < maxLength; i++) {
+        const aDigit = i < aFrac.length ? aFrac[i] : '0';
+        const bDigit = i < bFrac.length ? bFrac[i] : '0';
+        if (aDigit !== bDigit) {
+            return (aIsNegative ? -1 : 1) * (aDigit > bDigit ? 1 : -1);
+        }
+    }
+
+    return 0;
+}
+function isYWithinBounds(yStr) {
+    if (typeof yStr !== 'string') return false;
+    yStr = yStr.trim();
+    const validNumberRegex = /^-?\d+(\.\d+)?$/;
+    if (!validNumberRegex.test(yStr)) return false;
+
+    if (compareNumberStrings(yStr, "-3") < 0) return false;
+    if (compareNumberStrings(yStr, "3") > 0) return false;
+
+    return true;
+}
+
 
 function addToTable(x, y, r, result, currTime, execTime) {
     const tableBody = document.getElementById('output');
@@ -114,7 +162,7 @@ function removePlaceholderRow() {
     }
 }
 
-function setupCommaToDotInput() { //замена запятой на точку.всё норм с курсором.ввести можно только разрешенные символы
+function setupCommaToDotInput() { //замена запятой на точку.ввести можно только разрешенные символы
     const inputElement = document.getElementById('y');
     inputElement.addEventListener('input', function (e) {
         let value = this.value;
@@ -158,7 +206,6 @@ function setupCommaToDotInput() { //замена запятой на точку.
             return;
         }
 
-        // Проверяем цифры, точку, запятую и минус
         if (!/^[0-9.,\-]$/.test(e.key)) {
             e.preventDefault();
             return;
@@ -167,14 +214,12 @@ function setupCommaToDotInput() { //замена запятой на точку.
         const currentValue = this.value;
         const selectionStart = this.selectionStart;
 
-        // Проверка для точки/запятой
         if (e.key === '.' || e.key === ',') {
             if (currentValue.includes('.')) {
                 e.preventDefault();
             }
         }
 
-        // Проверка для минуса
         if (e.key === '-') {
             if (currentValue.includes('-') || selectionStart !== 0) {
                 e.preventDefault();
@@ -199,12 +244,40 @@ function addPlaceholderRow() { // возвращение заглушки
     `;
     tableBody.appendChild(newRow);
 }
-function setupClearButtonHandler() {
+/*function setupClearButtonHandler() {
     const clearButton = document.getElementById('clear-btn');
 
     clearButton.addEventListener('click', () => {
         clearTable();
         clearLocalStorage();
+    });
+}*/
+function setupClearButtonHandler() {
+    const clearButton = document.getElementById('clear-btn');
+
+    clearButton.addEventListener('click', () => {
+        // Отправляем запрос на сервер для очистки БД
+        fetch('fcgi-bin/labwork1.jar?clear=1', {
+            method: 'GET',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Сервер вернул ошибку: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "cleared") {
+                    clearTable();
+                    clearLocalStorage();
+                } else {
+                    throw new Error("Сервер не подтвердил очистку");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка очистки:", error);
+                showFlashMessage(`Ошибка очистки: ${error.message}`);
+            });
     });
 }
 
@@ -212,7 +285,7 @@ function showFlashMessage(message) {
     const flash = document.getElementById('flash-message');
     flash.textContent = message;
     flash.classList.add('show');
-    setTimeout(() => flash.classList.remove('show'), 3000); // скроется через 3 сек
+    setTimeout(() => flash.classList.remove('show'), 3000);
 }
 function setupCheckButtonHandler() {
     const checkButton = document.querySelector('input[value="Проверка"]');
@@ -243,13 +316,19 @@ function setupCheckButtonHandler() {
         }
 
         const xVal = parseFloat(xElement.value);
-        const yVal = parseFloat(yElement.value);
+        const yStr = yElement.value.trim();
         const rVal = parseFloat(rElement.value);
 
-        if (isNaN(xVal) || isNaN(yVal) || isNaN(rVal)) {
+        if (isNaN(xVal) || isNaN(rVal)) {
             showFlashMessage("Вводите числовые значения");
             return;
         }
+
+        if (!isYWithinBounds(yStr)) {
+            showFlashMessage("Значение Y должно быть в интервале от -3 до 3");
+            return;
+        }
+        const yVal = parseFloat(yStr);
 
         const validator = new InputValidator();
         validator.validate(xVal, yVal, rVal);
@@ -259,7 +338,7 @@ function setupCheckButtonHandler() {
             //console.log("Validation successful:", validator.getMessage());
             resetForm();
             // Отправляем запрос на сервер
-            fetch(`http://localhost:8080/fcgi-bin/labwork1.jar?x=${xVal}&y=${yVal}&r=${rVal}`, {
+            fetch(`fcgi-bin/labwork1.jar?x=${xVal}&y=${yStr}&r=${rVal}`, {
                 method: 'GET',
             })
                 .then(response => {

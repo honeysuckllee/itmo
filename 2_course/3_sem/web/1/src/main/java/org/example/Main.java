@@ -31,12 +31,14 @@ public class Main {
                 "reason": "%s"
             }
             """;
+    private static SQLManager sqlManager;
 
     public static void main(String[] args) {
         var fcgi = new FCGIInterface();
         var hitChecker = new Hit();
+        sqlManager = new SQLManager();
 
-        System.setProperty("FCGI_PORT", "9000");
+        System.setProperty("FCGI_PORT", "26001");
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
         while (fcgi.FCGIaccept() >= 0) {
             try {
@@ -52,12 +54,38 @@ public class Main {
                     errorResponse("Отсутствует QUERY_STRING");
                     continue; 
                 }
+
+                if (queryParams.contains("clear=1")) {
+                    sqlManager.clearHitResult();
+
+                    String json = """
+                    {
+                        "status": "cleared",
+                        "curr_time": "%s"
+                    }
+                    """.formatted(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss").format(LocalDateTime.now()));
+
+                    String response = String.format(HTTP_RESPONSE, json);
+                    System.out.print(response);
+
+                    continue;
+                }
+
                 var parser = new Parser(queryParams);
                 boolean result = hitChecker.hit(parser.getX(), parser.getY(), parser.getR());
                 var endTime = System.nanoTime();
                 double execMillis = (endTime - startTime) / 1_000_000.0;
                 String execTimeStr = String.format("%.3fms", execMillis);
                 String currTimeStr = outputFormatter.format(LocalDateTime.now());
+
+                sqlManager.insertHitResult(
+                        parser.getX(),
+                        parser.getY(),
+                        parser.getR(),
+                        result,
+                        execMillis,
+                        currTimeStr
+                );
 
                 String json = String.format(
                         RESULT_JSON,
