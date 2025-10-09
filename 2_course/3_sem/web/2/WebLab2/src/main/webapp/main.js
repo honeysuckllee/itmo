@@ -77,8 +77,8 @@ function isYWithinBounds(yStr) {
     const validNumberRegex = /^-?\d+(\.\d+)?$/;
     if (!validNumberRegex.test(yStr)) return false;
 
-    if (compareNumberStrings(yStr, "-3") < 0) return false;
-    if (compareNumberStrings(yStr, "3") > 0) return false;
+    if (compareNumberStrings(yStr, "-5") < 0) return false;
+    if (compareNumberStrings(yStr, "5") > 0) return false;
 
     return true;
 }
@@ -265,12 +265,12 @@ function setupCheckButtonHandler() {
         const rVal = parseFloat(rElement.value);
 
         if (isNaN(xVal) || isNaN(rVal)) {
-            showFlashMessage("Вводите числовые значения");
+            showFlashMessage("Вводите числовые значения!");
             return;
         }
 
         if (!isYWithinBounds(yStr)) {
-            showFlashMessage("Значение Y должно быть в интервале от -3 до 3");
+            showFlashMessage("Значение Y должно быть в интервале от -5 до 5");
             return;
         }
         const yVal = parseFloat(yStr);
@@ -280,9 +280,11 @@ function setupCheckButtonHandler() {
 
 
         const formData = new URLSearchParams();
-        formData.append('x', xVal);
+        formData.append('x', "" + xVal);
         formData.append('y', yStr);
-        formData.append('r', rVal);
+        formData.append('r', "" + rVal);
+        formData.append("graph", "false");
+
         if (validator.getResponseCode() === 1) {
             //console.log("Validation successful:", validator.getMessage());
             resetForm();
@@ -292,7 +294,6 @@ function setupCheckButtonHandler() {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 },
-                redirect: "follow",
                 body: formData
             })
                 .then(response => {
@@ -301,23 +302,33 @@ function setupCheckButtonHandler() {
                     if (!response.ok) {
                         throw new Error(`Сервер вернул ошибку: ${response.status}`);
                     }
-                    if (response.redirected) {
+
+                    if (response.ok) {
+                        const chartStep = 176;
+                        const globalStep = chartStep / rVal; // тот же самый globalStep
+
+                        const cx = 220 + xVal * globalStep;
+                        const cy = 220 - parseFloat(yStr) * globalStep;
+                        localStorage.setItem("cx", cx);
+                        localStorage.setItem("cy", cy);
+                        console.log(cx, cy, "->");
+                        let h = response.headers.get("hit");
+                        localStorage.setItem("hit", response.headers.get("hit"));
                         window.location.href = response.url;
                     }
+                    return response.json();
                 })
-                /*.then(function (responseData) {
-                    console.log("Ответ сервера:", responseData);
-                    removePlaceholderRow();
-                    addToTable(
-                        xVal,
-                        yVal,
-                        rVal,
-                        responseData.result,
-                        responseData.curr_time,
-                        responseData.exec_time
-                    );
+                .then(data => {
+                    if (data.success) {
+                        // Сохраняем в localStorage (если нужно для последующих перезагрузок)
+                        localStorage.setItem("lastResult", JSON.stringify(data));
 
-                }) */
+                        // Показываем сообщение
+                        showFlashMessage(`Результат: ${data.hit ? 'Попадание!' : 'Мимо!'}`);
+                        console.log(data.hit);
+                        window.location.href = "result.jsp";
+                    }
+                })
                 .catch(error => {
                     console.error("Ошибка:", error);
                     showFlashMessage(`Ошибка запроса: ${error.message}`);
@@ -330,7 +341,6 @@ function setupCheckButtonHandler() {
 }
 
 
-// Функция для обновления значений в SVG с классами
 function updateSvgValues(selectedR) {
     if (!selectedR) return;
 
@@ -353,7 +363,18 @@ function updateSvgValues(selectedR) {
         el.textContent = '-' + r;
     });
 }
-
+function updateLastResult(data){
+    if (data !== undefined){
+        data = JSON.parse(data);
+        const point = document.querySelector(".point");
+        point.style.fill = data.hit ? "green" : "red";
+        let cx = localStorage.getItem("cx");
+        let cy = localStorage.getItem("cy");
+        console.log(cx, cy, "<-");
+        point.setAttribute("cx", cx);
+        point.setAttribute("cy", cy);
+    }
+}
 
 // инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
@@ -384,4 +405,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rSelect.value) {
         updateSvgValues(rSelect.value);
     }
+    updateLastResult(localStorage.getItem("lastResult"));
 });

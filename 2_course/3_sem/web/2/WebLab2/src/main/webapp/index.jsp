@@ -1,8 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +25,7 @@
 
 <main class="container">
     <div class="graph">
-        <svg viewBox="0 0 480 480" preserveAspectRatio="xMidYMid meet" width="100%" height="100%">
+        <svg width="440" height="440">
             <polygon points="220,220 308,220 220,132" fill="black" stroke="none"/>
 
             <defs>
@@ -64,11 +62,28 @@
             <text x="388" y="212" class="r-label-x">R</text>
             <text x="124" y="212" class="r-half-negative-label-x">-R/2</text>
             <text x="36" y="212" class="r-negative-label-x">-R</text>
+
+            <circle class="point" cx="220" cy="220" r="5"/>
         </svg>
     </div>
 
     <div class="form" id="input-form">
         <form>
+            <div class="input-group">
+                <label for="r">R:</label>
+                <select id="r" name="r" class="select-input">
+                    <option value="">Выберите R</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="y">Y:</label>
+                <input type="text" id="y" name="y">
+            </div>
             <div class="input-group">
                 <label for="x">X:</label>
                 <select id="x" name="x" class="select-input">
@@ -77,22 +92,6 @@
                     <option value="-2">-2</option>
                     <option value="-1">-1</option>
                     <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="y">Y:</label>
-                <input type="text" id="y" name="y">
-            </div>
-            <div class="input-group">
-                <label for="r">R:</label>
-                <select id="r" name="r" class="select-input">
-                    <option value="">Выберите R</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -137,5 +136,7 @@
 </main>
 
 <script type="module" src="main.js"></script>
+<script type="module" src="graph.js"></script>
+
 </body>
 </html>

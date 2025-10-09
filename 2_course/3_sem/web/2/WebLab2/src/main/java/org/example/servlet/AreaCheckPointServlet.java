@@ -13,17 +13,23 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@WebServlet("/controller/areacheck")
-public class AreaCheckServlet extends HttpServlet {
+@WebServlet("/controller/areacheckpoint")
+public class AreaCheckPointServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Access-Control-Allow-Origin", "*"); // или ваш домен
+        resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+        resp.setHeader("Access-Control-Expose-Headers", "hit, X-User-Id, Authorization");
 
 
         try {
@@ -39,8 +45,8 @@ public class AreaCheckServlet extends HttpServlet {
 
             boolean hit = AreaChecker.checkHit(x, y, r);
 
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentTime = formatter.format(new Date());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String currentTime = LocalDateTime.now(ZoneId.of("Europe/Moscow")).format(formatter);
 
             long startTime = (long) req.getAttribute("startTime");
             long executionTimeNanos = System.nanoTime() - startTime;
@@ -58,16 +64,7 @@ public class AreaCheckServlet extends HttpServlet {
             // Добавляем новый результат
             results.add(new PointResult(x, y, r, hit, currentTime, executionTimeMicros));
 
-            //  Передача данных в JSP
-            req.setAttribute("x", x);
-            req.setAttribute("y", y);
-            req.setAttribute("r", r);
-            req.setAttribute("hit", hit);
-            req.setAttribute("currentTime", currentTime);
-            req.setAttribute("executionTimeMicros", executionTimeMicros);
-            req.setAttribute("redirected", true);
-            resp.setHeader("redirected", "true");
-            // Передача данных в JSP
+            //Передача данных в JSP
             req.setAttribute("x", x);
             req.setAttribute("y", y);
             req.setAttribute("r", r);
@@ -77,8 +74,7 @@ public class AreaCheckServlet extends HttpServlet {
             req.setAttribute("redirected", true);
             resp.setHeader("redirected", "true");
             resp.setHeader("hit", String.valueOf(hit));
-
-//  JSON-ответ
+// Формируем JSON-ответ
             String jsonResponse = String.format(
                     "{%n" +
                             "  \"success\": true,%n" +
@@ -98,12 +94,21 @@ public class AreaCheckServlet extends HttpServlet {
             );
 
             resp.getWriter().write(jsonResponse);
-           // req.getRequestDispatcher("/result.jsp").forward(req, resp);
-           // resp.sendRedirect(req.getContextPath() + "/result.jsp");
+            // req.getRequestDispatcher("/result.jsp").forward(req, resp);
+            //resp.sendRedirect(req.getContextPath() + "/result.jsp");
 
         } catch (Exception e) {
             req.setAttribute("error", "Ошибка: " + e.getMessage());
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
         }
     }
+    @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        resp.setHeader("Access-Control-Expose-Headers", "hit, X-User-Id");
+        resp.setStatus(HttpServletResponse.SC_OK);
+    }
+
 }
