@@ -20,17 +20,12 @@ public class ControllerServlet extends HttpServlet {
         String x = req.getParameter("x");
         String y = req.getParameter("y");
         String r = req.getParameter("r");
-        String graph = req.getParameter("graph");
 
 
         // Если все параметры переданы — отправляем на проверку
-        if (x != null && y != null && r != null && graph != null &&
-                !x.trim().isEmpty() && !y.trim().isEmpty() && !r.trim().isEmpty() && !graph.trim().isEmpty()) {
-            if (graph.equals("false")){
-                req.getRequestDispatcher("/controller/areacheck").forward(req, resp);}
-            else{
-                req.getRequestDispatcher("/controller/areacheckpoint").forward(req, resp);}
-
+        if (x != null && y != null && r != null &&
+                !x.trim().isEmpty() && !y.trim().isEmpty() && !r.trim().isEmpty()) {
+            req.getRequestDispatcher("/areaCheck").forward(req, resp);
         } else {
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
         }
@@ -38,6 +33,7 @@ public class ControllerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // GET-запросы тоже ведут на форму
         req.getRequestDispatcher("/index.jsp").forward(req, resp);
     }
 }

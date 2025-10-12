@@ -77,8 +77,8 @@ function isYWithinBounds(yStr) {
     const validNumberRegex = /^-?\d+(\.\d+)?$/;
     if (!validNumberRegex.test(yStr)) return false;
 
-    if (compareNumberStrings(yStr, "-5") < 0) return false;
-    if (compareNumberStrings(yStr, "5") > 0) return false;
+    if (compareNumberStrings(yStr, "-3") < 0) return false;
+    if (compareNumberStrings(yStr, "3") > 0) return false;
 
     return true;
 }
@@ -110,19 +110,19 @@ function clearTable() {
 }
 
 function resetForm() {
-    const xSelect = document.querySelector('select[name="x"]');
-    const rSelect = document.querySelector('select[name="r"]');
-
-    if (xSelect) xSelect.value = "";
-    if (rSelect) rSelect.value = "";
+    const xRadios = document.querySelectorAll('input[name="x"]');
+    xRadios.forEach(radio => radio.checked = false);
 
     const yInput = document.getElementById('y');
     if (yInput) {
         yInput.value = '';
     }
+
+    const rRadios = document.querySelectorAll('input[name="r"]');
+    rRadios.forEach(radio => radio.checked = false);
 }
 function removePlaceholderRow() {
-/*    const tableBody = document.getElementById('output');
+    const tableBody = document.getElementById('output');
     const firstRow = tableBody.firstElementChild;
 
     if (firstRow && firstRow.tagName === 'TR') {
@@ -138,7 +138,7 @@ function removePlaceholderRow() {
         ) {
             tableBody.removeChild(firstRow);
         }
-    }*/
+    }
 }
 
 function setupCommaToDotInput() { //замена запятой на точку.ввести можно только разрешенные символы
@@ -240,9 +240,9 @@ function setupCheckButtonHandler() {
         document.getElementById('flash-message').classList.remove('show');
 
 
-        const xElement = document.querySelector('select[name="x"]');
+        const xElement = document.querySelector('input[name="x"]:checked');
         const yElement = document.querySelector('#y');
-        const rElement = document.querySelector('select[name="r"]');
+        const rElement = document.querySelector('input[name="r"]:checked');
 
 
         if (!xElement) {
@@ -265,12 +265,12 @@ function setupCheckButtonHandler() {
         const rVal = parseFloat(rElement.value);
 
         if (isNaN(xVal) || isNaN(rVal)) {
-            showFlashMessage("Вводите числовые значения!");
+            showFlashMessage("Вводите числовые значения");
             return;
         }
 
         if (!isYWithinBounds(yStr)) {
-            showFlashMessage("Значение Y должно быть в интервале от -5 до 5");
+            showFlashMessage("Значение Y должно быть в интервале от -3 до 3");
             return;
         }
         const yVal = parseFloat(yStr);
@@ -280,11 +280,9 @@ function setupCheckButtonHandler() {
 
 
         const formData = new URLSearchParams();
-        formData.append('x', "" + xVal);
+        formData.append('x', xVal);
         formData.append('y', yStr);
-        formData.append('r', "" + rVal);
-        formData.append("graph", "false");
-
+        formData.append('r', rVal);
         if (validator.getResponseCode() === 1) {
             //console.log("Validation successful:", validator.getMessage());
             resetForm();
@@ -292,42 +290,28 @@ function setupCheckButtonHandler() {
             fetch(`controller`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: formData
             })
                 .then(response => {
-                    const redirected = response.headers.get('redirected') === 'true';
-                    console.log('Was redirected:', redirected);
                     if (!response.ok) {
                         throw new Error(`Сервер вернул ошибку: ${response.status}`);
                     }
-
-                    if (response.ok) {
-                        const chartStep = 176;
-                        const globalStep = chartStep / rVal; // тот же самый globalStep
-
-                        const cx = 220 + xVal * globalStep;
-                        const cy = 220 - parseFloat(yStr) * globalStep;
-                        localStorage.setItem("cx", cx);
-                        localStorage.setItem("cy", cy);
-                        console.log(cx, cy, "->");
-                        let h = response.headers.get("hit");
-                        localStorage.setItem("hit", response.headers.get("hit"));
-                        window.location.href = response.url;
-                    }
                     return response.json();
                 })
-                .then(data => {
-                    if (data.success) {
-                        // Сохраняем в localStorage (если нужно для последующих перезагрузок)
-                        localStorage.setItem("lastResult", JSON.stringify(data));
+                .then(function (responseData) {
+                    console.log("Ответ сервера:", responseData);
+                    removePlaceholderRow();
+                    addToTable(
+                        xVal,
+                        yVal,
+                        rVal,
+                        responseData.result,
+                        responseData.curr_time,
+                        responseData.exec_time
+                    );
 
-                        // Показываем сообщение
-                        showFlashMessage(`Результат: ${data.hit ? 'Попадание!' : 'Мимо!'}`);
-                        console.log(data.hit);
-                        window.location.href = "result.jsp";
-                    }
                 })
                 .catch(error => {
                     console.error("Ошибка:", error);
@@ -338,42 +322,6 @@ function setupCheckButtonHandler() {
             showFlashMessage(validator.getMessage());
         }
     });
-}
-
-
-function updateSvgValues(selectedR) {
-    if (!selectedR) return;
-
-    const r = parseFloat(selectedR);
-    const rHalf = (r / 2).toFixed(1);
-
-    document.querySelectorAll('.r-label, .r-label-x').forEach(el => {
-        el.textContent = r;
-    });
-
-    document.querySelectorAll('.r-half-label, .r-half-label-x').forEach(el => {
-        el.textContent = rHalf;
-    });
-
-    document.querySelectorAll('.r-half-negative-label, .r-half-negative-label-x').forEach(el => {
-        el.textContent = '-' + rHalf;
-    });
-
-    document.querySelectorAll('.r-negative-label, .r-negative-label-x').forEach(el => {
-        el.textContent = '-' + r;
-    });
-}
-function updateLastResult(data){
-    if (data !== undefined){
-        data = JSON.parse(data);
-        const point = document.querySelector(".point");
-        point.style.fill = data.hit ? "green" : "red";
-        let cx = localStorage.getItem("cx");
-        let cy = localStorage.getItem("cy");
-        console.log(cx, cy, "<-");
-        point.setAttribute("cx", cx);
-        point.setAttribute("cy", cy);
-    }
 }
 
 // инициализация при загрузке страницы
@@ -395,15 +343,4 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', newTheme);
         });
     }
-
-    const rSelect = document.getElementById('r');
-    rSelect.addEventListener('change', function() {
-        updateSvgValues(this.value);
-    });
-
-    // Инициализация при загрузке
-    if (rSelect.value) {
-        updateSvgValues(rSelect.value);
-    }
-    updateLastResult(localStorage.getItem("lastResult"));
 });

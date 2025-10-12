@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@WebServlet("/controller/areacheck")
+@WebServlet("/areaCheck")
 public class AreaCheckServlet extends HttpServlet {
 
     @Override
@@ -27,18 +27,22 @@ public class AreaCheckServlet extends HttpServlet {
 
 
         try {
+            // === Парсинг параметров ===
             BigDecimal x = new BigDecimal(req.getParameter("x")).setScale(2, RoundingMode.HALF_UP);
             BigDecimal y = new BigDecimal(req.getParameter("y")).setScale(2, RoundingMode.HALF_UP);
             BigDecimal r = new BigDecimal(req.getParameter("r")).setScale(2, RoundingMode.HALF_UP);
 
+            // === Валидация диапазонов ===
             if (x.compareTo(BigDecimal.valueOf(-5)) < 0 || x.compareTo(BigDecimal.valueOf(5)) > 0 ||
                     y.compareTo(BigDecimal.valueOf(-5)) < 0 || y.compareTo(BigDecimal.valueOf(5)) > 0 ||
                     r.compareTo(BigDecimal.ONE) < 0 || r.compareTo(BigDecimal.valueOf(5)) > 0) {
                 throw new IllegalArgumentException("Значения вне допустимого диапазона");
             }
 
+            // === Проверка попадания ===
             boolean hit = AreaChecker.checkHit(x, y, r);
 
+            // === Форматирование текущего времени ===
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = formatter.format(new Date());
 
@@ -58,48 +62,15 @@ public class AreaCheckServlet extends HttpServlet {
             // Добавляем новый результат
             results.add(new PointResult(x, y, r, hit, currentTime, executionTimeMicros));
 
-            //  Передача данных в JSP
+            // === Передача данных в JSP ===
             req.setAttribute("x", x);
             req.setAttribute("y", y);
             req.setAttribute("r", r);
             req.setAttribute("hit", hit);
             req.setAttribute("currentTime", currentTime);
             req.setAttribute("executionTimeMicros", executionTimeMicros);
-            req.setAttribute("redirected", true);
-            resp.setHeader("redirected", "true");
-            // Передача данных в JSP
-            req.setAttribute("x", x);
-            req.setAttribute("y", y);
-            req.setAttribute("r", r);
-            req.setAttribute("hit", hit);
-            req.setAttribute("currentTime", currentTime);
-            req.setAttribute("executionTimeMicros", executionTimeMicros);
-            req.setAttribute("redirected", true);
-            resp.setHeader("redirected", "true");
-            resp.setHeader("hit", String.valueOf(hit));
 
-//  JSON-ответ
-            String jsonResponse = String.format(
-                    "{%n" +
-                            "  \"success\": true,%n" +
-                            "  \"hit\": %s,%n" +
-                            "  \"x\": %s,%n" +
-                            "  \"y\": %s,%n" +
-                            "  \"r\": %s,%n" +
-                            "  \"currentTime\": \"%s\",%n" +
-                            "  \"executionTimeMicros\": %d%n" +
-                            "}",
-                    hit,
-                    x,
-                    y,
-                    r,
-                    currentTime,
-                    executionTimeMicros
-            );
-
-            resp.getWriter().write(jsonResponse);
-           // req.getRequestDispatcher("/result.jsp").forward(req, resp);
-           // resp.sendRedirect(req.getContextPath() + "/result.jsp");
+            req.getRequestDispatcher("/result.jsp").forward(req, resp);
 
         } catch (Exception e) {
             req.setAttribute("error", "Ошибка: " + e.getMessage());
