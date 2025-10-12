@@ -130,7 +130,7 @@ header {
     border: none;
     box-shadow: none;
     flex-grow: 1;
-    text-align: center; /* Гарантируем центрирование */
+    text-align: center;
 }
 
 .theme-toggle {
@@ -184,13 +184,9 @@ header {
 [data-theme="dark"] .sun { display: none; }
 [data-theme="dark"] .moon { display: block; }
 
-/* === SVG GRAPH — оси поверх фигур === */
 .graph svg {
-    width: 100%;
-    height: 100%;
     display: block;
-    max-width: 100%;
-    max-height: 100%;
+    cursor: crosshair;
 }
 
 .graph svg line,
@@ -206,14 +202,14 @@ header {
     stroke: none;
 }
 
+
 .container {
     display: grid;
-    gap: 20px;
     padding: 10px;
     min-height: 100vh;
     box-sizing: border-box;
     width: 100%;
-    grid-template-rows: auto 0.91fr auto; /* ← Ключевое изменение */
+    grid-template-rows: auto 0.99fr auto;
 }
 
 .graph,
@@ -221,19 +217,28 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 240px; /* ← Чуть меньше */
-    padding: 20px;
-    width: 100%;
+    padding: 15px;
+}
+.graph svg circle.point {
+    fill: red;
+    stroke: none;
 }
 
+.graph svg circle.point#hit {
+    fill: limegreen;
+    stroke: none;
+}
 .graph {
     grid-column: 1 / 3;
     grid-row: 2 / 4;
+    width: 900px;  /* Фиксированная ширина */
+    height: 600px; /* Фиксированная высота */
     border: 5px solid var(--graph-border);
     background-color: var(--graph-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
     overflow: hidden;
+
 }
 
 .form {
@@ -243,14 +248,14 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 520px;  /* Фиксированная ширина */
+    height: 600px; /* Фиксированная высота */
     background-color: var(--form-bg);
     border: 5px solid var(--graph-border);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
 }
 
-
-/* === FORM STYLING === */
 .form label {
     margin-bottom: 0.5em;
     font-size: 18px;
@@ -266,23 +271,40 @@ header {
     font-size: 17px;
 }
 
-.radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-    justify-content: center;
+.select-input {
+    padding: 0.5em;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 16px;
+    width: 150px;
+    outline: none;
+    box-shadow: var(--input-shadow);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%234A2B6D' stroke-width='2'%3e%3cpolyline points='4,6 8,10 12,6'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.6em center;
+    background-size: 12px;
+    padding-right: 28px;
+    cursor: pointer;
+    transition: var(--transition);
 }
 
-.radio-group label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3em;
-    text-align: center;
-    width: 40px;
+[data-theme="dark"] .select-input {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23f4effa' stroke-width='2'%3e%3cpolyline points='4,6 8,10 12,6'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
-.radio-group input[type="radio"] {
-    accent-color: var(--radio-accent);
+.select-input:hover {
+    background-color: var(--input-bg-focus);
+    box-shadow: var(--input-shadow);
+}
+
+.select-input:focus {
+    background-color: var(--input-bg-focus);
+    box-shadow:
+            inset 0 0 5px rgba(0, 0, 0, 0.1),
+            0 0 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Поле ввода Y */
@@ -380,7 +402,7 @@ table td:last-child {
     border-right: none;
 }
 
-table tr:hover:not(:first-child) {
+table tr:hover {
     background-color: var(--table-hover);
 }
 
@@ -406,4 +428,28 @@ table tr:hover:not(:first-child) {
 
 #flash-message.show {
     opacity: 1;
+}
+
+
+.result-table thead,
+.result-table tbody {
+    display: block;
+}
+
+.result-table tbody {
+    max-height: calc(10 * 1.8em);
+    overflow-y: auto;
+    width: 100%;
+}
+
+.result-table thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.result-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }

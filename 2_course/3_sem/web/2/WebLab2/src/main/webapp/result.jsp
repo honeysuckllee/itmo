@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
@@ -21,28 +22,32 @@
             <th>Время запроса</th>
             <th>Время выполнения</th>
         </tr>
-        <tr>
-            <td>${x}</td>
-            <td>${y}</td>
-            <td>${r}</td>
-            <td>${hit ? 'Да' : 'Нет'}</td>
-            <td>${currentTime}</td>
-            <td>${executionTimeMicros}</td>
-        </tr>
+        <c:set var="lastIndex" value="${fn:length(sessionScope.results) - 1}"/>
+        <c:if test="${lastIndex >= 0}">
+            <c:set var="item" value="${sessionScope.results[lastIndex]}"/>
+            <tr>
+                <td>${item.x.toPlainString()}</td>
+                <td>${item.y.toPlainString()}</td>
+                <td>${item.r.toPlainString()}</td>
+                <td>${item.hit ? 'Да' : 'Нет'}</td>
+                <td>${item.timestamp}</td>
+                <td>${item.executionTimeMicros} мкс</td>
+            </tr>
+        </c:if>
     </table>
 
     <!-- История из HTTP-сессии -->
     <h2>История проверок</h2>
-    <div id="info-table">
-        <table>
+    <div id="info-table" class="table-wrapper">
+        <table class="result-table">
             <thead>
             <tr>
                 <th>x</th>
                 <th>y</th>
                 <th>R</th>
-                <th>Время</th>
-                <th>Выполнение</th>
                 <th>Попадание</th>
+                <th>Время запроса</th>
+                <th>Время выполнения</th>
             </tr>
             </thead>
             <tbody>
@@ -51,19 +56,20 @@
                     <td>${item.x.toPlainString()}</td>
                     <td>${item.y.toPlainString()}</td>
                     <td>${item.r.toPlainString()}</td>
+                    <td>${item.hit ? 'Да' : 'Нет'}</td>
                     <td>${item.timestamp}</td>
                     <td>${item.executionTimeMicros} мкс</td>
-                    <td>${item.hit ? 'Да' : 'Нет'}</td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
     </div>
 </div>
-
-<!-- Кнопка "Назад" -->
+<div class="button-group">
 <form action="index.jsp" method="get">
-    <input class="back" type="submit" value="<-- Назад к форме" />
+    <input class="button-group" type="submit" value="Назад к форме" />
 </form>
+</div>
 </body>
+<script type="module" src="result.js"></script>
 </html>

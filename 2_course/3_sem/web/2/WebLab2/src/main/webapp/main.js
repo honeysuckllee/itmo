@@ -77,14 +77,14 @@ function isYWithinBounds(yStr) {
     const validNumberRegex = /^-?\d+(\.\d+)?$/;
     if (!validNumberRegex.test(yStr)) return false;
 
-    if (compareNumberStrings(yStr, "-3") < 0) return false;
-    if (compareNumberStrings(yStr, "3") > 0) return false;
+    if (compareNumberStrings(yStr, "-5") < 0) return false;
+    if (compareNumberStrings(yStr, "5") > 0) return false;
 
     return true;
 }
 
 
-function addToTable(x, y, r, result, currTime, execTime) {
+function addToTable(x, y, r, result, currTime, execTime) {/*
     const tableBody = document.getElementById('output');
     const newRow = document.createElement('tr');
     const formattedY = typeof y === 'number' ? y.toFixed(3) : y;
@@ -98,7 +98,7 @@ function addToTable(x, y, r, result, currTime, execTime) {
     `;
     //tableBody.appendChild(newRow);
     tableBody.insertBefore(newRow, tableBody.firstChild);
-
+*/
 }
 
 function clearTable() {
@@ -110,19 +110,19 @@ function clearTable() {
 }
 
 function resetForm() {
-    const xRadios = document.querySelectorAll('input[name="x"]');
-    xRadios.forEach(radio => radio.checked = false);
+    const xSelect = document.querySelector('select[name="x"]');
+    const rSelect = document.querySelector('select[name="r"]');
+
+    if (xSelect) xSelect.value = "";
+    if (rSelect) rSelect.value = "";
 
     const yInput = document.getElementById('y');
     if (yInput) {
         yInput.value = '';
     }
-
-    const rRadios = document.querySelectorAll('input[name="r"]');
-    rRadios.forEach(radio => radio.checked = false);
 }
 function removePlaceholderRow() {
-    const tableBody = document.getElementById('output');
+/*    const tableBody = document.getElementById('output');
     const firstRow = tableBody.firstElementChild;
 
     if (firstRow && firstRow.tagName === 'TR') {
@@ -138,7 +138,7 @@ function removePlaceholderRow() {
         ) {
             tableBody.removeChild(firstRow);
         }
-    }
+    }*/
 }
 
 function setupCommaToDotInput() { //замена запятой на точку.ввести можно только разрешенные символы
@@ -240,9 +240,10 @@ function setupCheckButtonHandler() {
         document.getElementById('flash-message').classList.remove('show');
 
 
-        const xElement = document.querySelector('input[name="x"]:checked');
+        const xElement = document.querySelector('select[name="x"]');
         const yElement = document.querySelector('#y');
-        const rElement = document.querySelector('input[name="r"]:checked');
+        const rElement = document.querySelector('select[name="r"]');
+
 
 
         if (!xElement) {
@@ -265,12 +266,12 @@ function setupCheckButtonHandler() {
         const rVal = parseFloat(rElement.value);
 
         if (isNaN(xVal) || isNaN(rVal)) {
-            showFlashMessage("Вводите числовые значения");
+            showFlashMessage("Вводите числовые значения!");
             return;
         }
 
         if (!isYWithinBounds(yStr)) {
-            showFlashMessage("Значение Y должно быть в интервале от -3 до 3");
+            showFlashMessage("Значение Y должно быть в интервале от -5 до 5");
             return;
         }
         const yVal = parseFloat(yStr);
@@ -280,17 +281,20 @@ function setupCheckButtonHandler() {
 
 
         const formData = new URLSearchParams();
-        formData.append('x', xVal);
+        formData.append('x', "" + xVal);
         formData.append('y', yStr);
-        formData.append('r', rVal);
+        formData.append('r', "" + rVal);
+        formData.append("graph", "/areacheck");
+
         if (validator.getResponseCode() === 1) {
             //console.log("Validation successful:", validator.getMessage());
             resetForm();
+            localStorage.setItem("r", "" + rVal);
             // Отправляем запрос на сервер
             fetch(`controller`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 },
                 body: formData
             })
@@ -298,21 +302,11 @@ function setupCheckButtonHandler() {
                     if (!response.ok) {
                         throw new Error(`Сервер вернул ошибку: ${response.status}`);
                     }
-                    return response.json();
+                    if (response.ok) {
+                        window.location.href = "result.jsp";
+                    }
                 })
-                .then(function (responseData) {
-                    console.log("Ответ сервера:", responseData);
-                    removePlaceholderRow();
-                    addToTable(
-                        xVal,
-                        yVal,
-                        rVal,
-                        responseData.result,
-                        responseData.curr_time,
-                        responseData.exec_time
-                    );
 
-                })
                 .catch(error => {
                     console.error("Ошибка:", error);
                     showFlashMessage(`Ошибка запроса: ${error.message}`);
@@ -321,6 +315,80 @@ function setupCheckButtonHandler() {
             console.error("Validation failed:", validator.getMessage());
             showFlashMessage(validator.getMessage());
         }
+    });
+}
+
+
+function updateSvgValues(selectedR) {
+    if (!selectedR) return;
+
+    const r = parseFloat(selectedR);
+    const rHalf = (r / 2).toFixed(1);
+
+    document.querySelectorAll('.r-label, .r-label-x').forEach(el => {
+        el.textContent = r;
+    });
+
+    document.querySelectorAll('.r-half-label, .r-half-label-x').forEach(el => {
+        el.textContent = rHalf;
+    });
+
+    document.querySelectorAll('.r-half-negative-label, .r-half-negative-label-x').forEach(el => {
+        el.textContent = '-' + rHalf;
+    });
+
+    document.querySelectorAll('.r-negative-label, .r-negative-label-x').forEach(el => {
+        el.textContent = '-' + r;
+    });
+}
+
+function updateSvgPoint(selectedR) {
+    if (!selectedR) return;
+
+    const r = parseFloat(selectedR);
+    if (isNaN(r) || r === 0) return;
+
+    const scale = 176 / r;
+    const points = document.querySelectorAll('circle.point');
+
+    points.forEach(function(circle) {
+        const x = parseFloat(circle.getAttribute('x'));
+        const y = parseFloat(circle.getAttribute('y'));
+
+        if (isNaN(x) || isNaN(y)) return;
+
+        // Обновляем координаты сразу
+        const cx = 220 + x * scale;
+        const cy = 220 - y * scale;
+        circle.setAttribute('cx', cx.toFixed(2));
+        circle.setAttribute('cy', cy.toFixed(2));
+
+        // Формируем данные для запроса
+        const formData = new URLSearchParams();
+        formData.append('x', String(x));
+        formData.append('y', String(y));
+        formData.append('r', String(r));
+        formData.append('graph', '/areacheckjs');
+
+        // Отправляем запрос
+        fetch('controller', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: formData
+        })
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(text) {
+                const isHit = text.trim().toLowerCase() === 'true';
+                circle.id = isHit ? 'hit' : '';
+            })
+            .catch(function(error) {
+                console.warn('Ошибка проверки точки:', x, y, r, error);
+                circle.id = ''; // по умолчанию — не попадание
+            });
     });
 }
 
@@ -342,5 +410,20 @@ document.addEventListener('DOMContentLoaded', () => {
             htmlElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
         });
+    }
+
+    const rSelect = document.getElementById('r');
+    rSelect.addEventListener('change', function() {
+        updateSvgValues(this.value);
+        updateSvgPoint(this.value);
+    });
+    const rVal = localStorage.getItem("r");
+    rSelect.value = parseInt(rVal);
+    console.log("rVal= ", rVal);
+
+    // Инициализация при загрузке
+    if (rSelect.value) {
+        updateSvgValues(rSelect.value);
+        updateSvgPoint(rSelect.value);
     }
 });
