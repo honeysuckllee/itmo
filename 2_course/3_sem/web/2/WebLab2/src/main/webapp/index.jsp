@@ -25,7 +25,9 @@
 
 <main class="container">
     <div class="graph">
-        <svg width="440" height="440">
+        <svg width="440" height="440" id = "graph"
+            data-last-r="${not empty sessionScope.results ? sessionScope.results[fn:length(sessionScope.results) - 1].r : 1}">
+
             <polygon points="220,220 308,220 220,132" fill="black" stroke="none"/>
 
             <defs>
@@ -65,8 +67,6 @@
 
             <c:if test="${not empty sessionScope.results}">
                 <c:set var="lastR" value="${sessionScope.results[fn:length(sessionScope.results) - 1].r}" scope="page"/>
-                <!-- Всего точек: ${fn:length(sessionScope.results)} -->
-                <!-- R: ${lastR} -->
                 <c:forEach var="item" items="${sessionScope.results}" varStatus="loop">
 
                         <circle class="point"
@@ -116,6 +116,7 @@
             </div>
             <div class="button-group">
                 <input type="submit" value="Проверка">
+                <input type="button" id="clear-btn" value="Очистить таблицу">
             </div>
             <div id="flash-message" class="flash-message"></div>
         </form>

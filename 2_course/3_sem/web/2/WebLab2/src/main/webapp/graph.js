@@ -5,7 +5,7 @@ function showFlashMessage(message) {
     setTimeout(() => flash.classList.remove('show'), 3000);
 }
 export function svgMousePoint(){
-    const toSVGPoint = (svg, x, y) => {
+    const toSVGPoint = (svg, x, y) => { //перевод глобавльных координат экрана в локальные координаты svg
         let p = new DOMPoint(x, y);
         return p.matrixTransform(svg.getScreenCTM().inverse());
     };
@@ -20,29 +20,23 @@ export function svgMousePoint(){
             showFlashMessage("Выберите R!");
             return;
         }
-        localStorage.setItem("r", "" + R);
-        const chartStep = 176
+
+        const chartStep = 176 //пиксельное расстояние от центра SVG до максимального R
         const globalStep = chartStep / R
         const x = (cx - 220) / globalStep
         const y = (220 - cy) / globalStep
-        const data = {
-            x: x,
-            y: y,
-            R: R
-        }
-        console.log(cx, cy,x, y, R);
+
         const formData = new URLSearchParams();
         formData.append('x', "" + x);
         formData.append('y', "" + y);
         formData.append('r', "" + R);
-        formData.append("graph", "/areacheckpoint");
+        formData.append("path", "/areacheckpoint");
 
             fetch(`controller`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                 },
-                //redirect: "follow",
                 body: formData
             })
                 .then(response => {
@@ -50,26 +44,10 @@ export function svgMousePoint(){
                         throw new Error(`Сервер вернул ошибку: ${response.status}`);
                     }
                     if (response.ok) {
-                        localStorage.setItem("cx", cx);
-                        localStorage.setItem("cy", cy);
-                        console.log(cx, cy, "->");
-                        let h = response.headers.get("hit");
-                        localStorage.setItem("hit", response.headers.get("hit"));
-                        window.location.href = response.url;
-                    }
-                    return response.json();
-                })
-
-                .then(data => {
-                    if (data.success) {
-                        // Сохраняем в localStorage
-                        localStorage.setItem("lastResult", JSON.stringify(data));
-                        console.log(data.hit);
                         window.location.href = "result.jsp";
                     }
                 })
                 .catch(error => {
-                    console.error("Ошибка:", error);
                     showFlashMessage(`Ошибка запроса: ${error.message}`);
                 });
     });

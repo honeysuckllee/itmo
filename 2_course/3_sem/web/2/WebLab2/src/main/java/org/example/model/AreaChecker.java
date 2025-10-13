@@ -37,7 +37,6 @@ public class AreaChecker {
                 return true;
             }
         }
-
         return false;
     }
 }

@@ -8,8 +8,8 @@ public class PointResult {
     private final BigDecimal y;
     private final BigDecimal r;
     private final boolean hit;
-    private final String timestamp; // форматированная строка
-    private final long executionTimeMicros; // время в микросекундах
+    private final String timestamp;
+    private final long executionTimeMicros;
 
     public PointResult(BigDecimal x, BigDecimal y, BigDecimal r, boolean hit, String timestamp, long executionTimeMicros) {
         this.x = x;
@@ -20,7 +20,6 @@ public class PointResult {
         this.executionTimeMicros = executionTimeMicros;
     }
 
-    // Getters
     public BigDecimal getX() { return x; }
     public BigDecimal getY() { return y; }
     public BigDecimal getR() { return r; }

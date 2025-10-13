@@ -83,30 +83,41 @@ function isYWithinBounds(yStr) {
     return true;
 }
 
+function clearTable() {
 
-function addToTable(x, y, r, result, currTime, execTime) {/*
-    const tableBody = document.getElementById('output');
-    const newRow = document.createElement('tr');
-    const formattedY = typeof y === 'number' ? y.toFixed(3) : y;
-    newRow.innerHTML = `
-        <td>${x}</td>
-        <td>${formattedY}</td>
-        <td>${r}</td>
-        <td>${result ? 'Попал' : 'Не попал'}</td>
-        <td>${currTime}</td>
-        <td>${execTime}</td>
-    `;
-    //tableBody.appendChild(newRow);
-    tableBody.insertBefore(newRow, tableBody.firstChild);
-*/
+    const formData = new URLSearchParams();
+    formData.append('path', '/cleartable');
+
+    // Отправляем запрос
+    fetch('controller', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Сервер вернул ошибку: ${response.status}`);
+            }
+            if (response.ok) {
+                showFlashMessage("Таблица очищена");
+            }
+        })
+        .catch(function(error) {
+            showFlashMessage("Ошибка очистки таблицы");
+        });
 }
 
-function clearTable() {
-    const tableBody = document.getElementById('output');
-    while (tableBody.rows.length > 0) {
-        tableBody.removeChild(tableBody.lastChild);
+function clearResultTable() {
+    const tableBody = document.querySelector('.resultTable tbody');
+    if (tableBody) {
+        tableBody.innerHTML = '';
     }
-    addPlaceholderRow();
+}
+function clearAllPoints() {
+    const points = document.querySelectorAll('circle.point');
+    points.forEach(circle => circle.remove());
 }
 
 function resetForm() {
@@ -120,25 +131,6 @@ function resetForm() {
     if (yInput) {
         yInput.value = '';
     }
-}
-function removePlaceholderRow() {
-/*    const tableBody = document.getElementById('output');
-    const firstRow = tableBody.firstElementChild;
-
-    if (firstRow && firstRow.tagName === 'TR') {
-        const cells = firstRow.querySelectorAll('td');
-        if (
-            cells.length === 6 &&
-            cells[0].textContent === 'Data for x' &&
-            cells[1].textContent === 'Data for y' &&
-            cells[2].textContent === 'Data for r' &&
-            cells[3].textContent === 'Data for hit or not' &&
-            cells[4].textContent === 'Data for current time' &&
-            cells[5].textContent === 'Data for duration'
-        ) {
-            tableBody.removeChild(firstRow);
-        }
-    }*/
 }
 
 function setupCommaToDotInput() { //замена запятой на точку.ввести можно только разрешенные символы
@@ -207,25 +199,6 @@ function setupCommaToDotInput() { //замена запятой на точку.
     });
 }
 
-function addPlaceholderRow() { // возвращение заглушки
-    const tableBody = document.getElementById('output');
-
-    if (tableBody.rows.length > 0) return;
-
-    const newRow = document.createElement('tr');
-    newRow.innerHTML = `
-        <td>Data for x</td>
-        <td>Data for y</td>
-        <td>Data for r</td>
-        <td>Data for hit or not</td>
-        <td>Data for current time</td>
-        <td>Data for duration</td>
-    `;
-    tableBody.appendChild(newRow);
-}
-
-
-
 function showFlashMessage(message) {
     const flash = document.getElementById('flash-message');
     flash.textContent = message;
@@ -284,12 +257,10 @@ function setupCheckButtonHandler() {
         formData.append('x', "" + xVal);
         formData.append('y', yStr);
         formData.append('r', "" + rVal);
-        formData.append("graph", "/areacheck");
+        formData.append("path", "/areacheck");
 
         if (validator.getResponseCode() === 1) {
-            //console.log("Validation successful:", validator.getMessage());
             resetForm();
-            localStorage.setItem("r", "" + rVal);
             // Отправляем запрос на сервер
             fetch(`controller`, {
                 method: 'POST',
@@ -368,7 +339,7 @@ function updateSvgPoint(selectedR) {
         formData.append('x', String(x));
         formData.append('y', String(y));
         formData.append('r', String(r));
-        formData.append('graph', '/areacheckjs');
+        formData.append('path', '/areacheckjs');
 
         // Отправляем запрос
         fetch('controller', {
@@ -390,6 +361,14 @@ function updateSvgPoint(selectedR) {
                 circle.id = ''; // по умолчанию — не попадание
             });
     });
+}
+
+function getLastRFromSVG() {
+    const svg = document.getElementById('graph');
+    if (!svg) return 1;
+
+    const lastR = svg.getAttribute('data-last-r');
+    return lastR ? parseInt(lastR) : 1;
 }
 
 // инициализация при загрузке страницы
@@ -417,8 +396,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSvgValues(this.value);
         updateSvgPoint(this.value);
     });
-    const rVal = localStorage.getItem("r");
-    rSelect.value = parseInt(rVal);
+    const rVal = getLastRFromSVG();
+    rSelect.value = rVal;
     console.log("rVal= ", rVal);
 
     // Инициализация при загрузке
@@ -426,4 +405,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSvgValues(rSelect.value);
         updateSvgPoint(rSelect.value);
     }
+    const checkButton = document.querySelector('input[value="Очистить таблицу"]');
+    checkButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearTable();
+        clearResultTable();
+        clearAllPoints();
+    });
 });
