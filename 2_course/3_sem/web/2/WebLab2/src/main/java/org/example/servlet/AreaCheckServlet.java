@@ -47,7 +47,7 @@ public class AreaCheckServlet extends HttpServlet {
             long executionTimeMicros = TimeUnit.NANOSECONDS.toMicros(executionTimeNanos);
 
             HttpSession session = req.getSession();
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked") //чтобы не ругался на приведения типов
             List<PointResult> results = (List<PointResult>) session.getAttribute("results");
 
             if (results == null) {
@@ -55,7 +55,6 @@ public class AreaCheckServlet extends HttpServlet {
                 session.setAttribute("results", results);
             }
 
-            // Добавляем новый результат
             results.add(new PointResult(x, y, r, hit, currentTime, executionTimeMicros));
 
            // req.getRequestDispatcher("/result.jsp").forward(req, resp);

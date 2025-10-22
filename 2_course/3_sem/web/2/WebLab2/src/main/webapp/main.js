@@ -199,6 +199,44 @@ function setupCommaToDotInput() { //замена запятой на точку.
     });
 }
 
+
+function setupKeyboardNavigation() {
+    const rSelect = document.getElementById('r');
+    const svg = document.getElementById('graph');
+
+    if (!rSelect || !svg) return;
+
+    //let isReadyToNavigate = !!rSelect.value;
+
+    // Если значение по умолчанию установлено — сразу готовы
+    //rSelect.addEventListener('change', () => {
+    //    isReadyToNavigate = true;
+    //});
+
+    // Перехватываем keydown на select
+    rSelect.addEventListener('keydown', function(e) {
+        /*if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation(); // ← важно: остановить всплытие
+
+            if (!isReadyToNavigate) {
+                showFlashMessage("Выберите значение R");
+                return;
+            }
+
+            // Временно делаем SVG фокусируемым
+            svg.setAttribute('tabindex', '-1'); // -1 = фокус программно, но не через Tab
+            svg.focus();
+
+            // Опционально: убрать tabindex после фокуса (или оставить)
+            // svg.removeAttribute('tabindex'); // можно, но не обязательно
+
+            showFlashMessage("Фокус на графике. Используйте стрелки ←↑→↓, Enter — для выбора точки.");
+        }*/
+    });
+}
+
+
 function showFlashMessage(message) {
     const flash = document.getElementById('flash-message');
     flash.textContent = message;
@@ -294,7 +332,7 @@ function updateSvgValues(selectedR) {
     if (!selectedR) return;
 
     const r = parseFloat(selectedR);
-    const rHalf = (r / 2).toFixed(1);
+    const rHalf = (r / 2);
 
     document.querySelectorAll('.r-label, .r-label-x').forEach(el => {
         el.textContent = r;
@@ -321,6 +359,7 @@ function updateSvgPoint(selectedR) {
 
     const scale = 176 / r;
     const points = document.querySelectorAll('circle.point');
+    let hasOutOfView = false;
 
     points.forEach(function(circle) {
         const x = parseFloat(circle.getAttribute('x'));
@@ -328,20 +367,21 @@ function updateSvgPoint(selectedR) {
 
         if (isNaN(x) || isNaN(y)) return;
 
-        // Обновляем координаты сразу
         const cx = 220 + x * scale;
         const cy = 220 - y * scale;
-        circle.setAttribute('cx', cx.toFixed(2));
-        circle.setAttribute('cy', cy.toFixed(2));
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
 
-        // Формируем данные для запроса
+        if (cx < 0 || cx > 440 || cy < 0 || cy > 440) {
+            hasOutOfView = true;
+        }
+
         const formData = new URLSearchParams();
         formData.append('x', String(x));
         formData.append('y', String(y));
         formData.append('r', String(r));
         formData.append('path', '/areacheckjs');
 
-        // Отправляем запрос
         fetch('controller', {
             method: 'POST',
             headers: {
@@ -361,6 +401,9 @@ function updateSvgPoint(selectedR) {
                 circle.id = ''; // по умолчанию — не попадание
             });
     });
+    if (hasOutOfView){
+        showFlashMessage("Не все точки смогли отобразиться");
+    }
 }
 
 function getLastRFromSVG() {
@@ -371,12 +414,67 @@ function getLastRFromSVG() {
     return lastR ? parseInt(lastR) : 1;
 }
 
+function onFocusR() {
+    showFlashMessage('Выберите значение R');
+}
+
+function onFocusY() {
+    showFlashMessage('Введите значение Y от -5 до 5');
+}
+
+function onFocusX() {
+    showFlashMessage('Выберите значение X');
+}
+
+function onFocusThemeToggle() {
+    showFlashMessage('Нажмите Enter, чтобы сменить тему оформления.');
+}
+
+function onFocusGraph() {
+    showFlashMessage('Используйте клавиши-стрелки для навигации по графику, Enter — для выбора точки.');
+}
+
+function onFocusCheck() {
+    showFlashMessage('Нажмите Enter, чтобы добавить новое значение в таблицу');
+}
+
+function onFocusClear() {
+    showFlashMessage('Нажмите Enter, чтобы очистить таблицу и график');
+}
+
+function handleKeyForGraphFocus(e) {
+    if (e.key === 'a' || e.key === 'A' || e.key === 'ф'|| e.key === 'Ф') {
+        const graph = document.getElementById('graph');
+        if (graph) {
+            graph.focus();
+        }
+    }
+}
+
+
 // инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     setupCheckButtonHandler();
     setupCommaToDotInput();
+    setupKeyboardNavigation();
+    document.addEventListener('keydown', handleKeyForGraphFocus);
 
+    const rSelect = document.getElementById('r');
+    const yInput = document.getElementById('y');
+    const xSelect = document.getElementById('x');
     const themeToggle = document.getElementById('theme-toggle');
+    const graph = document.getElementById('graph');
+    const check = document.getElementById('check-btn');
+    const clear = document.getElementById('clear-btn');
+
+    if (rSelect) rSelect.addEventListener('focus', onFocusR);
+    if (yInput) yInput.addEventListener('focus', onFocusY);
+    if (xSelect) xSelect.addEventListener('focus', onFocusX);
+    if (themeToggle) themeToggle.addEventListener('focus', onFocusThemeToggle);
+    if (graph) graph.addEventListener('focus', onFocusGraph);
+    if (clear) clear.addEventListener('focus', onFocusClear);
+    if (check) check.addEventListener('focus', onFocusCheck);
+
     const htmlElement = document.documentElement; // <html>
 
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -391,7 +489,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const rSelect = document.getElementById('r');
     rSelect.addEventListener('change', function() {
         updateSvgValues(this.value);
         updateSvgPoint(this.value);

@@ -43,9 +43,12 @@
     --border-radius: 8px;
     --font-size-base: 16px;
     --transition: all 0.3s ease;
+
+    --cursor-fill: #00f;
 }
 
 [data-theme="dark"] {
+    --cursor-fill: yellow;
     --bg-body: #2f184b;
     --text-color: #f4effa;
     --border-color: rgb(70, 0, 90);
@@ -199,6 +202,11 @@ header {
 .graph svg polygon,
 .graph svg circle {
     fill: var(--graph-fill);
+    stroke: none;
+}
+
+.graph svg circle.cursor  {
+    fill: var(--cursor-fill);
     stroke: none;
 }
 

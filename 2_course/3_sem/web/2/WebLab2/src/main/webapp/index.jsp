@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
@@ -26,6 +26,8 @@
 <main class="container">
     <div class="graph">
         <svg width="440" height="440" id = "graph"
+             role="application"
+             aria-label="Виртуальный график. Используйте стрелки для перемещения курсора, Enter — для выбора точки."
             data-last-r="${not empty sessionScope.results ? sessionScope.results[fn:length(sessionScope.results) - 1].r : 1}">
 
             <polygon points="220,220 308,220 220,132" fill="black" stroke="none"/>
@@ -87,7 +89,6 @@
             <div class="input-group">
                 <label for="r">R:</label>
                 <select id="r" name="r" class="select-input">
-                    <option value="">Выберите R</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -102,7 +103,6 @@
             <div class="input-group">
                 <label for="x">X:</label>
                 <select id="x" name="x" class="select-input">
-                    <option value="">Выберите Х</option>
                     <option value="-3">-3</option>
                     <option value="-2">-2</option>
                     <option value="-1">-1</option>
@@ -115,7 +115,7 @@
                 </select>
             </div>
             <div class="button-group">
-                <input type="submit" value="Проверка">
+                <input type="submit" id="check-btn" value="Проверка">
                 <input type="button" id="clear-btn" value="Очистить таблицу">
             </div>
             <div id="flash-message" class="flash-message"></div>

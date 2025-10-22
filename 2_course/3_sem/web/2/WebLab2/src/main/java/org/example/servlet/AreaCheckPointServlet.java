@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class AreaCheckPointServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Access-Control-Allow-Origin", "*"); // или ваш домен
+        resp.setHeader("Access-Control-Allow-Origin", "*");
         resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
@@ -67,8 +68,11 @@ public class AreaCheckPointServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/result.jsp");
 
         } catch (Exception e) {
-            req.setAttribute("error", "Ошибка: " + e.getMessage());
-            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.setHeader("Content-Type", "text/plain;charset=UTF-8");
+            PrintWriter out = resp.getWriter();
+            out.print("Wrong coordinates!");
+            out.flush();
         }
     }
     @Override
