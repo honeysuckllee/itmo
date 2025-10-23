@@ -120,6 +120,7 @@ header {
     padding: 10px 20px;
     max-width: 1200px;
     margin: 0 auto;
+    gap: 16px;
 }
 
 .info {
@@ -142,14 +143,22 @@ header {
     border: none;
     cursor: pointer;
     font-size: 24px;
-    padding: 8px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     color: var(--info-text);
-    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.theme-toggle:focus {
+    background-color: rgba(0, 0, 0, 0.05);
     transform: scale(1.1);
+    outline: 2px solid var(--border-color);
+    outline-offset: 2px;
 }
 
 .tooltip {
@@ -169,6 +178,7 @@ header {
     transition: opacity 0.2s, visibility 0.2s;
     pointer-events: none;
     z-index: 10;
+    font-weight: 600;
 }
 
 .theme-toggle:hover .tooltip {
@@ -239,8 +249,8 @@ header {
 .graph {
     grid-column: 1 / 3;
     grid-row: 2 / 4;
-    width: 900px;  /* Фиксированная ширина */
-    height: 600px; /* Фиксированная высота */
+    width: 900px;
+    height: 600px;
     border: 5px solid var(--graph-border);
     background-color: var(--graph-bg);
     border-radius: var(--border-radius);
@@ -256,8 +266,8 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 520px;  /* Фиксированная ширина */
-    height: 600px; /* Фиксированная высота */
+    width: 520px;
+    height: 600px;
     background-color: var(--form-bg);
     border: 5px solid var(--graph-border);
     border-radius: var(--border-radius);
@@ -315,7 +325,6 @@ header {
             0 0 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Поле ввода Y */
 input[type="text"] {
     padding: 0.5em;
     border-radius: 4px;
@@ -461,10 +470,9 @@ table tr:hover {
     width: 100%;
     table-layout: fixed;
 }
-/* Добавьте это в ваш CSS */
+
 .result-table th,
 .result-table td {
-    /* Убедитесь, что ширина фиксирована */
     box-sizing: border-box;
 }
 
@@ -495,31 +503,30 @@ table tr:hover {
 
 .result-table th:nth-child(6),
 .result-table td:nth-child(6) {
-    width: 24%; /* Сумма должна быть ~100% */
+    width: 24%;
 }
-/* Стили скроллбара */
 .table-wrapper::-webkit-scrollbar {
-    width: 12px; /* Ширина вертикального скроллбара */
-    height: 12px; /* Высота горизонтального скроллбара (если нужен) */
+    width: 12px;
+    height: 12px;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-    background: var(--bg-body); /* Фон трека — фон страницы */
+    background: var(--bg-body);
     border-radius: 6px;
     border: 1px solid var(--border-color);
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-    background: var(--button-bg); /* Цвет ползунка — под цвет кнопок */
+    background: var(--button-bg);
     border-radius: 6px;
-    border: 2px solid var(--bg-body); /* Отступ от края */
+    border: 2px solid var(--bg-body);
 }
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: var(--button-bg-hover); /* При наведении — ярче */
+    background: var(--button-bg-hover);
 }
 
-/* Для Firefox (использует другую систему) */
+/* Для Firefox  */
 .table-wrapper {
     scrollbar-width: thin;
     scrollbar-color: var(--button-bg) var(--bg-body);
@@ -544,4 +551,156 @@ table tr:hover {
 
 .table-wrapper::-moz-scrollbar-thumb:hover {
     background: var(--button-bg-hover);
+}
+
+.help-toggle {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--info-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.help-toggle:hover,
+.help-toggle:focus {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: scale(1.1);
+    outline: 2px solid var(--border-color);
+    outline-offset: 2px;
+}
+
+.help-toggle .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--bg-body);
+    color: var(--text-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.help-toggle:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal.is-open {
+    display: flex;
+}
+
+.modal-dialog {
+    background: var(--form-bg);
+    color: var(--form-text);
+    border: 3px solid var(--graph-border);
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--info-bg);
+    border-bottom: 2px solid var(--info-border);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--info-text);
+}
+
+.modal-close {
+    background: none;
+    border: 2px solid currentColor;
+    color: var(--info-text);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    background-color: rgba(0, 0, 0, 0.1);
+    outline: 2px solid var(--border-color);
+    outline-offset: 2px;
+}
+
+.modal-content {
+    padding: 20px;
+    overflow-y: auto;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.modal-content h3 {
+    margin-top: 16px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+
+.modal-content ul {
+    padding-left: 24px;
+    margin: 12px 0;
+}
+
+.modal-content li {
+    margin-bottom: 8px;
+}
+
+.modal-content kbd {
+    background: var(--input-bg-focus);
+    color: var(--text-color);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
 }

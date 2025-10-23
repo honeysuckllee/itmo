@@ -1,3 +1,4 @@
+let isUsingKeyboard = false;
 export default class InputValidator {
     constructor() {
         this.responseCode = 1; // 1 - успех, 0 - ошибка
@@ -164,6 +165,16 @@ function setupCommaToDotInput() { //замена запятой на точку.
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            isUsingKeyboard = true;
+        }
+    });
+
+    document.addEventListener('mousedown', () => {
+        isUsingKeyboard = false;
+    });
+
     inputElement.addEventListener('keydown', function (e) {
 
         const allowedKeys = [ // цифры, точки, запятые, стрелки, Backspace, Delete, Tab, Ctrl+a, Ctrl+v, Ctrl+c
@@ -198,44 +209,6 @@ function setupCommaToDotInput() { //замена запятой на точку.
         }
     });
 }
-
-
-function setupKeyboardNavigation() {
-    const rSelect = document.getElementById('r');
-    const svg = document.getElementById('graph');
-
-    if (!rSelect || !svg) return;
-
-    //let isReadyToNavigate = !!rSelect.value;
-
-    // Если значение по умолчанию установлено — сразу готовы
-    //rSelect.addEventListener('change', () => {
-    //    isReadyToNavigate = true;
-    //});
-
-    // Перехватываем keydown на select
-    rSelect.addEventListener('keydown', function(e) {
-        /*if (e.key === 'Enter') {
-            e.preventDefault();
-            e.stopPropagation(); // ← важно: остановить всплытие
-
-            if (!isReadyToNavigate) {
-                showFlashMessage("Выберите значение R");
-                return;
-            }
-
-            // Временно делаем SVG фокусируемым
-            svg.setAttribute('tabindex', '-1'); // -1 = фокус программно, но не через Tab
-            svg.focus();
-
-            // Опционально: убрать tabindex после фокуса (или оставить)
-            // svg.removeAttribute('tabindex'); // можно, но не обязательно
-
-            showFlashMessage("Фокус на графике. Используйте стрелки ←↑→↓, Enter — для выбора точки.");
-        }*/
-    });
-}
-
 
 function showFlashMessage(message) {
     const flash = document.getElementById('flash-message');
@@ -415,31 +388,35 @@ function getLastRFromSVG() {
 }
 
 function onFocusR() {
-    showFlashMessage('Выберите значение R');
+    if (isUsingKeyboard) showFlashMessage('Выберите значение R');
 }
 
 function onFocusY() {
-    showFlashMessage('Введите значение Y от -5 до 5');
+    if (isUsingKeyboard) showFlashMessage('Введите значение Y от -5 до 5');
 }
 
 function onFocusX() {
-    showFlashMessage('Выберите значение X');
+    if (isUsingKeyboard) showFlashMessage('Выберите значение X');
 }
 
 function onFocusThemeToggle() {
-    showFlashMessage('Нажмите Enter, чтобы сменить тему оформления.');
+    if (isUsingKeyboard) showFlashMessage('Нажмите Enter, чтобы сменить тему оформления.');
 }
 
 function onFocusGraph() {
-    showFlashMessage('Используйте клавиши-стрелки для навигации по графику, Enter — для выбора точки.');
+    if (isUsingKeyboard) showFlashMessage('Используйте клавиши-стрелки для навигации по графику, Enter — для выбора точки.');
 }
 
 function onFocusCheck() {
-    showFlashMessage('Нажмите Enter, чтобы добавить новое значение в таблицу');
+    if (isUsingKeyboard) showFlashMessage('Нажмите Enter, чтобы добавить новое значение в таблицу');
 }
 
 function onFocusClear() {
-    showFlashMessage('Нажмите Enter, чтобы очистить таблицу и график');
+    if (isUsingKeyboard) showFlashMessage('Нажмите Enter, чтобы очистить таблицу и график');
+}
+
+function onFocusHelpModal() {
+    if (isUsingKeyboard) showFlashMessage('Нажмите Enter, изучить справку по клавиатурной навигации');
 }
 
 function handleKeyForGraphFocus(e) {
@@ -451,12 +428,49 @@ function handleKeyForGraphFocus(e) {
     }
 }
 
+function setupHelpModal() {
+    const helpToggle = document.getElementById('help-toggle');
+    const helpModal = document.getElementById('help-modal');
+    const helpClose = document.getElementById('help-close');
+
+    if (!helpToggle || !helpModal || !helpClose) {
+        return;
+    }
+
+    function openHelp() {
+        helpModal.classList.add('is-open');
+        helpModal.focus();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeHelp() {
+        helpModal.classList.remove('is-open');
+        document.body.style.overflow = '';
+        helpToggle.focus();
+    }
+
+    helpToggle.addEventListener('click', openHelp);
+    helpClose.addEventListener('click', closeHelp);
+
+    helpModal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeHelp();
+        }
+    });
+
+    helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+            closeHelp();
+        }
+    });
+}
+
 
 // инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     setupCheckButtonHandler();
     setupCommaToDotInput();
-    setupKeyboardNavigation();
+    setupHelpModal();
     document.addEventListener('keydown', handleKeyForGraphFocus);
 
     const rSelect = document.getElementById('r');
@@ -466,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const graph = document.getElementById('graph');
     const check = document.getElementById('check-btn');
     const clear = document.getElementById('clear-btn');
+    const help= document.getElementById('help-toggle')
 
     if (rSelect) rSelect.addEventListener('focus', onFocusR);
     if (yInput) yInput.addEventListener('focus', onFocusY);
@@ -474,8 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (graph) graph.addEventListener('focus', onFocusGraph);
     if (clear) clear.addEventListener('focus', onFocusClear);
     if (check) check.addEventListener('focus', onFocusCheck);
+    if (help) help.addEventListener('focus', onFocusHelpModal);
 
-    const htmlElement = document.documentElement; // <html>
+    const htmlElement = document.documentElement;
 
     const savedTheme = localStorage.getItem('theme') || 'light';
     htmlElement.setAttribute('data-theme', savedTheme);
