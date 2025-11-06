@@ -1,9 +1,7 @@
-(function () {
-    'use strict';
+function setClockFromServer() {
+        const serverTimeElement = document.getElementById('indexform:serverTime');
 
-    function setClockFromServer() {
-        const serverTimeElement = document.getElementById('serverClock');
-        const serverTimeMillis = parseInt(serverTimeElement.getAttribute('data-time'), 10);
+        const serverTimeMillis = parseInt(serverTimeElement.textContent, 10);
 
         if (isNaN(serverTimeMillis)) {
             console.error("Не удалось получить время с сервера.");
@@ -11,7 +9,6 @@
         }
 
         const serverTime = new Date(serverTimeMillis);
-
         const seconds = serverTime.getSeconds();
         const minutes = serverTime.getMinutes();
         const hours = serverTime.getHours() % 12;
@@ -40,4 +37,3 @@
     } else {
         setClockFromServer();
     }
-})();

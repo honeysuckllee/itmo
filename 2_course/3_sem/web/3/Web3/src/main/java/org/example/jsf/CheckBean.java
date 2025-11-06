@@ -19,7 +19,6 @@ public class CheckBean implements Serializable {
 
         BigDecimal zero = BigDecimal.ZERO;
         BigDecimal halfR = r.divide(BigDecimal.valueOf(2), 10, RoundingMode.HALF_UP);
-        BigDecimal negR = r.negate();
         BigDecimal negHalfR = halfR.negate();
 
         if (x.compareTo(zero) <= 0 && y.compareTo(zero) <= 0) {

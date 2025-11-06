@@ -10,22 +10,16 @@
     <meta name="author" content="Хахулина Светлана Алексеевна" />
     <title>Лабораторная работа — Стартовая страница</title>
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/start-page.css" />
+    <script src="#{request.contextPath}/js/analog-clock.js"></script>
 </h:head>
 
 <h:body>
-    <h:form>
-
-        <h:panelGroup id="serverClock" style="display:none;" layout="block"
-                      data-time="#{timeBean.serverTimeMillis}">
-            #{timeBean.formattedDateTime}
-        </h:panelGroup>
+    <h:form id="indexform">
 
         <p:poll interval="1"
-                listener="#{timeBean.update()}"
-                update="serverClock"
-                oncomplete="updateClockFromServer()"
-                autoStart="true" />
-
+                update="serverTime"
+                oncomplete="setClockFromServer()"/>
+        <h:outputText id="serverTime" value="#{timeBean.serverTimeMillis}" style="display:none;" />
 
     <div class="header">
         <h1>Лабораторная работа по веб-программированию</h1>
@@ -60,6 +54,6 @@
                          action="#{navBean.goToMain}"
                          styleClass="back-button"/>    </div>
     </h:form>
-    <script src="#{request.contextPath}/js/analog-clock.js"></script>
+
 </h:body>
 </html>
