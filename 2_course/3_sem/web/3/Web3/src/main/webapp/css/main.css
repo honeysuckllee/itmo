@@ -1,0 +1,536 @@
+:root {
+    --cursor-fill: yellow;
+    --bg-body: #2f184b;
+    --text-color: #f4effa;
+    --border-color: rgb(70, 0, 90);
+    --shadow-color: rgba(176, 84, 209, 0.5);
+    --shadow-inset: inset 0 0 8px rgba(176, 84, 209, 0.922);
+    --shadow-inset-strong: inset 0 0 15px rgba(176, 84, 209, 0.6);
+
+    --info-bg: radial-gradient(circle at center, #9b72cf, #4B0082);
+    --info-text: #f4effa;
+    --info-border: rgb(70, 0, 90);
+
+    --form-bg: rgba(47, 24, 75, 1);
+    --form-text: #f4effa;
+
+    --graph-bg: rgba(47, 24, 75, 1);
+    --graph-border: rgb(70, 0, 90);
+    --graph-fill: #6D3DAD;
+    --graph-stroke: #FFFFFF;
+    --graph-text: #FFFFFF;
+
+    --input-bg: transparent;
+    --input-bg-focus: #9b72cf;
+    --input-text: #ffffff;
+    --input-shadow: inset 0 0 8px rgba(176, 84, 209, 0.922);
+
+    --button-bg: #8b57d4bd;
+    --button-bg-hover: #b25be1bd;
+    --button-text: #f4effa;
+
+    --table-header-bg: radial-gradient(circle at center, #9b72cf, #4B0082);
+    --table-header-text: #f4effa;
+    --table-cell-text: #ffffff;
+    --table-border: rgba(155, 114, 207, 0.6);
+    --table-hover: rgba(155, 114, 207, 0.08);
+
+    --flash-bg: transparent;
+    --flash-text: #f4effa;
+    --flash-shadow: inset 0 0 8px rgba(176, 84, 209, 0.922);
+
+    --radio-accent: #10002b;
+
+    --border-radius: 8px;
+    --font-size-base: 16px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
+}
+
+/* === HEADER === */
+header {
+    width: 100%;
+    padding: 0;
+    background: var(--info-bg);
+    border-bottom: 5px solid var(--info-border);
+    box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 16px;
+}
+
+.info {
+    font-size: 20px;
+    text-align: center;
+    color: var(--info-text);
+    font-weight: 700;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    background: none;
+    border: none;
+    box-shadow: none;
+    flex-grow: 1;
+    text-align: center;
+}
+
+/* === GRID LAYOUT === */
+.container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 15px;
+    padding: 15px;
+    min-height: 100vh;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* === GRAPH === */
+.graph {
+    grid-column: 1 / 3;
+    grid-row: 2 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 600px;
+    border: 5px solid var(--graph-border);
+    background-color: var(--graph-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
+    overflow: hidden;
+    padding: 10px;
+}
+
+.graph svg {
+    display: block;
+    cursor: crosshair;
+}
+
+.graph svg line,
+.graph svg text {
+    stroke: var(--graph-stroke);
+    fill: var(--graph-text);
+}
+
+.graph svg rect,
+.graph svg polygon,
+.graph svg circle {
+    fill: var(--graph-fill);
+    stroke: none;
+}
+
+.graph svg circle.cursor {
+    fill: var(--cursor-fill);
+    stroke: none;
+}
+
+.graph svg circle.point {
+    fill: red;
+    stroke: none;
+}
+
+.graph svg circle.point#hit {
+    fill: limegreen;
+    stroke: none;
+}
+
+/* === FORM === */
+.form {
+    grid-column: 3 / 5;
+    grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 600px;
+    background-color: var(--form-bg);
+    border: 5px solid var(--graph-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
+    padding: 20px;
+}
+
+.form .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2em;
+    font-size: 17px;
+}
+
+.form label {
+    margin-bottom: 0.5em;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--form-text);
+}
+
+/* === INPUT STYLES === */
+.form input[type="text"] {
+    padding: 0.5em;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 16px;
+    width: 150px;
+    outline: none;
+    box-shadow: var(--input-shadow);
+}
+
+.form input[type="text"]:focus {
+    background-color: var(--input-bg-focus);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.select-input {
+    padding: 0.5em;
+    border-radius: 4px;
+    border: none;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 16px;
+    width: 150px;
+    outline: none;
+    box-shadow: var(--input-shadow);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23f4effa' stroke-width='2'%3e%3cpolyline points='4,6 8,10 12,6'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.6em center;
+    background-size: 12px;
+    padding-right: 28px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.select-input:hover {
+    background-color: var(--input-bg-focus);
+    box-shadow: var(--input-shadow);
+}
+
+.select-input:focus {
+    background-color: var(--input-bg-focus);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* === BUTTONS === */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.button-group input[type="submit"],
+.button-group input[type="button"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 160px;
+    text-align: center;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    box-shadow: var(--shadow-inset);
+}
+
+.button-group input[type="submit"]:hover,
+.button-group input[type="button"]:hover {
+    background-color: var(--button-bg-hover);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+/* === SLIDER === */
+.slider {
+    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.slider .p-slider {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+#xDisplay {
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--form-text);
+    font-size: 18px;
+}
+
+/* === TABLE === */
+/* === TABLE === */
+.table {
+    grid-column: 1 / 5;
+    grid-row: 4 / 5;
+    background: radial-gradient(circle at center, rgba(155, 114, 207, 1), transparent);
+    border: 5px solid var(--graph-border);
+    border-radius: 20px 20px 0 0;
+    box-shadow: var(--shadow-inset-strong);
+    backdrop-filter: blur(7px);
+    margin-top: 20px;
+    padding: 15px;
+    max-height: 350px;
+    overflow: hidden;
+}
+
+.table h3 {
+    text-align: center;
+    margin: 0;
+    color: var(--form-text);
+    font-size: 22px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+/* === TABLE STYLES === */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: var(--table-cell-text);
+    font-size: 20px;
+}
+
+table th {
+    font-size: 20px;
+    text-align: center;
+    padding: 14px 10px;
+    font-weight: 600;
+    background: var(--table-header-bg);
+    color: var(--table-header-text);
+    border-bottom: 1px solid var(--table-border);
+    border-right: 1px solid var(--table-border);
+}
+
+table th:last-child {
+    border-right: none;
+}
+
+table td {
+    text-align: center;
+    padding: 12px 10px;
+    border-right: 1px solid var(--table-border);
+}
+
+table td:last-child {
+    border-right: none;
+}
+
+table tr:hover {
+    background-color: var(--table-hover);
+}
+
+.result-table thead,
+.result-table tbody {
+    display: block;
+}
+
+.result-table tbody {
+    max-height: calc(10 * 1.8em);
+    overflow-y: auto;
+    width: 100%;
+}
+
+.result-table thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.result-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.result-table th,
+.result-table td {
+    box-sizing: border-box;
+}
+
+.result-table th:nth-child(1),
+.result-table td:nth-child(1) { width: 12%; }
+
+.result-table th:nth-child(2),
+.result-table td:nth-child(2) { width: 12%; }
+
+.result-table th:nth-child(3),
+.result-table td:nth-child(3) { width: 12%; }
+
+.result-table th:nth-child(4),
+.result-table td:nth-child(4) { width: 15%; }
+
+.result-table th:nth-child(5),
+.result-table td:nth-child(5) { width: 25%; }
+
+.result-table th:nth-child(6),
+.result-table td:nth-child(6) { width: 24%; }
+
+/* === РЕЗУЛЬТАТЫ: ТАБЛИЦА С ФИКСИРОВАННЫМ ЗАГОЛОВКОМ === */
+.scrollable-table {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    display: block;
+    overflow: hidden; /* чтобы border-radius работал */
+}
+
+/* Скрываем стандартную таблицу и делаем блочную верстку */
+.scrollable-table table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block;
+}
+
+.scrollable-table thead,
+.scrollable-table tbody,
+.scrollable-table tr {
+    display: block;
+    width: 100%;
+}
+
+/* Заголовок — фиксированный, без скролла */
+.scrollable-table thead {
+    background: var(--table-header-bg);
+    color: var(--table-header-text);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* Тело таблицы — прокручивается */
+.scrollable-table tbody {
+    max-height: 260px; /* меньше, чем scrollable-table, чтобы учесть заголовок */
+    overflow-y: auto;
+    display: block;
+    width: 100%;
+}
+
+/* Ячейки — выравниваем по ширине */
+.scrollable-table th,
+.scrollable-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid var(--table-border);
+    width: calc(100% / 6); /* 6 колонок */
+    box-sizing: border-box;
+}
+
+.scrollable-table th:last-child,
+.scrollable-table td:last-child {
+    border-right: none;
+}
+
+/* Скроллбар — только у tbody */
+.scrollable-table tbody::-webkit-scrollbar {
+    width: 12px;
+}
+.scrollable-table tbody::-webkit-scrollbar-track {
+    background: var(--bg-body);
+    border-radius: 6px;
+}
+.scrollable-table tbody::-webkit-scrollbar-thumb {
+    background: var(--button-bg);
+    border-radius: 6px;
+    border: 2px solid var(--bg-body);
+}
+.scrollable-table tbody::-webkit-scrollbar-thumb:hover {
+    background: var(--button-bg-hover);
+}
+
+/* Firefox */
+.scrollable-table tbody {
+    scrollbar-width: thin;
+    scrollbar-color: var(--button-bg) var(--bg-body);
+}
+
+/* === FLASH MESSAGES === */
+#flash-message {
+    margin-top: 15px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--flash-text);
+    background-color: var(--flash-bg);
+    border: none;
+    box-shadow: var(--flash-shadow);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#flash-message.show {
+    opacity: 1;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto;
+        padding: 10px;
+    }
+
+    .graph {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+        height: 500px;
+    }
+
+    .form {
+        grid-column: 1 / 2;
+        grid-row: 3 / 4;
+        height: auto;
+        min-height: 400px;
+    }
+
+    .table {
+        grid-column: 1 / 2;
+        grid-row: 4 / 5;
+    }
+
+    .button-group {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}

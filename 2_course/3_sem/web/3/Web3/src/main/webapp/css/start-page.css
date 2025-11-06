@@ -1,0 +1,223 @@
+/* === Цветовые переменные (только тёмная тема) === */
+:root {
+    --bg-body: #2f184b;
+    --text-color: #f4effa;
+    --border-color: rgb(70, 0, 90);
+    --shadow-color: rgba(176, 84, 209, 0.5);
+    --shadow-inset: inset 0 0 8px rgba(176, 84, 209, 0.922);
+    --shadow-inset-strong: inset 0 0 15px oklch(20.77% 0.112 316.7);
+
+    --info-bg: radial-gradient(circle at center, #9b72cf, #4B0082);
+    --info-text: #f4effa;
+    --info-border: rgb(70, 0, 90);
+
+    --button-bg: #8b57d4bd;
+    --button-bg-hover: #b25be1bd;
+    --button-text: #f4effa;
+
+    --clock-bg: rgba(47, 24, 75, 1);
+    --clock-border: rgb(70, 0, 90);
+
+    --link-bg: #8b57d4bd;
+    --link-bg-hover: #b25be1bd;
+    --link-text: #f4effa;
+
+    --transition: all 0.3s ease;
+    --border-radius: 8px;
+}
+
+/* === Общие стили === */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: var(--info-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-inset-strong), var(--shadow-inset), 0 0 12px var(--shadow-color);
+}
+
+.header h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* === Часы === */
+.clock {
+    text-align: center;
+    font-size: 22px;
+    margin: 20px 0;
+    padding: 12px;
+    background-color: var(--clock-bg);
+    border: 2px solid var(--clock-border);
+    border-radius: var(--border-radius);
+    display: inline-block;
+    min-width: 300px;
+    box-shadow: var(--shadow-inset);
+}
+
+/* === Ссылка-кнопка === */
+.link-button {
+    display: block;
+    width: 280px;
+    margin: 30px auto;
+    padding: 14px 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--link-text);
+    background-color: var(--link-bg);
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.link-button:hover {
+    background-color: var(--link-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* === BUTTONS === */
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+    .back-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 160px;
+    text-align: center;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    box-shadow: var(--shadow-inset);
+}
+
+    .back-button:hover {
+    background-color: var(--button-bg-hover);
+    box-shadow: 0 0 10px var(--shadow-color);
+    transform: translateY(-2px);
+}
+    .back-button:active {
+    transform: translateY(0);
+}
+
+/* === Аналоговые часы (стрелки) === */
+.analog-clock {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.clock-face {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    border: 6px solid var(--clock-border);
+    border-radius: 50%;
+    background: var(--clock-bg);
+    box-shadow: var(--shadow-inset), 0 0 10px var(--shadow-color);
+}
+
+.hand {
+    position: absolute;
+    transform-origin: bottom center;
+    left: 50%;
+    bottom: 50%;
+    border-radius: 4px;
+    transform: translateX(-50%);
+}
+
+.hour-hand {
+    width: 6px;
+    height: 55px;
+    background: var(--text-color);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+}
+
+.minute-hand {
+    width: 4px;
+    height: 75px;
+    background: var(--text-color);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+.second-hand {
+    width: 2px;
+    height: 85px;
+    background: #ff4d94; /* Яркий акцентный цвет (розовый/красный), контрастный на тёмном фоне */
+    box-shadow: 0 0 6px #ff4d94;
+}
+
+.center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    background: #ff4d94;
+    border: 2px solid var(--clock-border);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 0 6px #ff4d94;
+}
+
+/* === Разметка циферблата === */
+.hour-mark {
+    position: absolute;
+    width: 4px;
+    height: 12px;
+    background: var(--text-color);
+    left: 50%;
+    top: 10px; /* отступ от края круга */
+    transform-origin: 0 100px; /* центр вращения — центр часов */
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+/* Позиционируем штрихи каждые 30 градусов (360 / 12 = 30) */
+.mark-1  { transform: translateX(-50%) rotate(30deg);  }
+.mark-2  { transform: translateX(-50%) rotate(60deg);  }
+.mark-3  { transform: translateX(-50%) rotate(90deg);  }
+.mark-4  { transform: translateX(-50%) rotate(120deg); }
+.mark-5  { transform: translateX(-50%) rotate(150deg); }
+.mark-6  { transform: translateX(-50%) rotate(180deg); }
+.mark-7  { transform: translateX(-50%) rotate(210deg); }
+.mark-8  { transform: translateX(-50%) rotate(240deg); }
+.mark-9  { transform: translateX(-50%) rotate(270deg); }
+.mark-10 { transform: translateX(-50%) rotate(300deg); }
+.mark-11 { transform: translateX(-50%) rotate(330deg); }
+.mark-12 { transform: translateX(-50%) rotate(0deg);   }
+
