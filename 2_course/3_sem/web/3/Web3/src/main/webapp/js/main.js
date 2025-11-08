@@ -94,6 +94,12 @@ function updateSvgValues(selectedR) {
 
 
 
+/*function updateChart(points) {
+    // Пример для Chart.js:
+    chart.data.datasets[0].data = points.map(p => ({x: p.x, y: p.y}));
+    chart.update();
+}*/
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const rSelect = document.getElementById("rValue");

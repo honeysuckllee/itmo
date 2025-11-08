@@ -130,10 +130,20 @@
 
                     <h:commandButton value="Очистить результаты"
                                      action="#{controllerBean.clear}"
-                                     styleClass="clear-button"/>
+                                     styleClass="clear-button">
+                        <f:ajax execute="@this"
+                            render="resultsPanel pointsJson"
+                            onevent="onAjaxComplete" />
+                    </h:commandButton>
+
                     <h:commandButton value="Вернуться на стартовую"
                                      action="#{navBean.backToIndex}"
                                      styleClass="back-button"/>
+                    <h:outputText id="pointsJson"
+                                  value="#{controllerBean.pointsAsJson}"
+                                  escape="false"
+                                  style="display:none;" />
+
                 </div>
             </div>
 
@@ -176,6 +186,16 @@
             </div>
         </div>
     </h:form>
+    <script>
+        function onAjaxComplete(data){
+        if (data.status === 'success') {
+            const jsonEl = document.getElementById('pointsJson');
+            const points = JSON.parse(jsonEl.textContent || jsonEl.innerText);
+            console.log(points);
+            //updateChart(points); // ← твоя функция отрисовки
+        }
+    }
+    </script>
     <script src="#{request.contextPath}/js/main.js"></script>
 </h:body>
 </html>

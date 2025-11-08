@@ -16,6 +16,7 @@ import java.util.List;
 public class ControllerBean implements Serializable {
     private final PointDAO pointDAO = new PointDAO();
     private List<Point> points = pointDAO.findAll();
+    private String PointsAsJson = "[]";
 
     public ControllerBean() {
     }
@@ -44,10 +45,13 @@ public class ControllerBean implements Serializable {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
+            System.out.println(mapper.writeValueAsString(points) + "!!!!!!!!!!!!!!");
             return mapper.writeValueAsString(points);
         } catch (Exception e) {
             return "[]";
         }
     }
-
+    public void setPointsAsJson(String PointsAsJson){
+        this.PointsAsJson = PointsAsJson;
+    }
 }
