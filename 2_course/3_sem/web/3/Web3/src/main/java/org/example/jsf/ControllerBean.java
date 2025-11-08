@@ -37,7 +37,7 @@ public class ControllerBean implements Serializable {
     }
 
     public void addPoint(Point point) {
-        points.add(point);
+        points.add(0, point);
         pointDAO.save(point);
     }
 

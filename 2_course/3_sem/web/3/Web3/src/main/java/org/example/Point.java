@@ -22,7 +22,11 @@ public class Point {
     private LocalDateTime date;
 
     @Transient
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+
+    public String getFormattedDate() {
+        return date != null ? date.format(FORMATTER) : "";
+    }
 
     @Column(name = "is_hit")
     private boolean check;
@@ -80,22 +84,6 @@ public class Point {
 
     public void setCheck(Boolean check) {
         this.check = check;
-    }
-
-    public DateTimeFormatter getFormatter() {
-        return formatter;
-    }
-
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.formatter = formatter;
-    }
-
-    public String beautifulDate() {
-        return date.format(formatter);
-    }
-
-    public String beautifulDuration() {
-        return ((duration / 1e6) * 1e6) / 1e6 + " ms";
     }
 
     public void setId(Long id) {

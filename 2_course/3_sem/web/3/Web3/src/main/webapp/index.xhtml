@@ -14,10 +14,11 @@
 </h:head>
 
 <h:body>
+
     <h:form id="indexform">
 
         <p:poll interval="1"
-                update="serverTime"
+                update="serverTime dateTimeText"
                 oncomplete="setClockFromServer()"/>
         <h:outputText id="serverTime" value="#{timeBean.serverTimeMillis}" style="display:none;" />
 
@@ -49,10 +50,15 @@
             </div>
         </div>
 
+        <div class="date-time-text">
+            <h:outputText id="dateTimeText" value="#{timeBean.formattedDateTime}" />
+        </div>
+
     <div class="form-buttons">
         <h:commandButton value="Перейти на основную страницу"
                          action="#{navBean.goToMain}"
-                         styleClass="back-button"/>    </div>
+                         styleClass="back-button"/>
+    </div>
     </h:form>
 
 </h:body>

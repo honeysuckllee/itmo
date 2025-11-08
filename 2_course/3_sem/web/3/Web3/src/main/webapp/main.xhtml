@@ -124,6 +124,10 @@
                     <h:message for="rValue" style="color: red; display: block;"/>
                 </div>
 
+                <div class="flash-container">
+                    <div id="flash-message"></div>
+                </div>
+
                 <!-- Кнопки -->
                 <div class="button-group">
                     <h:commandButton value="Проверить" action="#{pointBean.submit}"/>
@@ -174,7 +178,7 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">Время</f:facet>
-                            #{result.date}
+                            #{result.formattedDate}
                         </h:column>
                         <h:column>
                             <f:facet name="header">Время выполнения</f:facet>

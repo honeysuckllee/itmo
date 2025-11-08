@@ -534,3 +534,33 @@ table tr:hover {
         flex-wrap: wrap;
     }
 }
+
+.flash-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#flash-message {
+    margin-top: 15px;
+    padding: 12px 16px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: #f4effa; /* ваш текст */
+    background-color: #8b57d4bd; /* ваш фон кнопки */
+    border: none;
+    box-shadow: 0 0 8px rgba(176, 84, 209, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    width: 100%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#flash-message.show {
+    opacity: 1;
+}

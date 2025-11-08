@@ -221,3 +221,21 @@ body {
 .mark-11 { transform: translateX(-50%) rotate(330deg); }
 .mark-12 { transform: translateX(-50%) rotate(0deg);   }
 
+.date-time-text {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.date-time-text {
+    text-align: center;
+    font-size: 1.2em;
+    margin: 15px auto;
+    padding: 12px 20px;
+    border: 2px solid var(--clock-border);
+    border-radius: var(--border-radius);
+    background-color: var(--clock-bg);
+    box-shadow: var(--shadow-inset), 0 0 8px var(--shadow-color);
+    display: table;
+}

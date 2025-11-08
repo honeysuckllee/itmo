@@ -1,11 +1,18 @@
+function showFlashMessage(message) {
+    const flash = document.getElementById('flash-message');
+    flash.textContent = message;
+    flash.classList.add('show');
+    setTimeout(() => flash.classList.remove('show'), 3000);
+}
 function checkX() {
     const xInput = document.getElementById("xValue").value;
     x = parseFloat(xInput);
     console.log(xInput);
     if (![-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].includes(x)) {
-        alert("некорректный х");
-        return;
+        showFlashMessage("некорректный х");
+        return false;
     }
+    return true;
 }
 
 function checkY() {
@@ -15,13 +22,13 @@ function checkY() {
     try {
         y = new Decimal(yInput);
     } catch (e) {
-        alert("Введите Y в формате числа (от -5 до 5)");
+        showFlashMessage("Введите Y в формате числа (от -5 до 5)");
         return false;
     }
 
     // Проверяем, что y — это корректное число (не NaN)
     if (y.isNaN()) {
-        alert("Введите Y в формате числа (от -5 до 5)");
+        showFlashMessage("Введите Y в формате числа (от -5 до 5)");
         return false;
     }
 
@@ -31,7 +38,7 @@ function checkY() {
     if (y.greaterThanOrEqualTo(min) && y.lessThanOrEqualTo(max)) {
         return true;
     } else {
-        alert("Введите Y в формате числа (от -5 до 5)");
+        showFlashMessage("Введите Y в формате числа (от -5 до 5)");
         return false;
     }
 }
@@ -43,13 +50,13 @@ function checkR() {
     try {
         r = new Decimal(rInput);
     } catch (e) {
-        alert("Введите R в формате числа (от 1 до 4)");
+        showFlashMessage("Введите R в формате числа (от 1 до 4)");
         return false;
     }
 
     // Проверяем, что y — это корректное число (не NaN)
     if (r.isNaN()) {
-        alert("Введите R в формате числа (от 1 до 5)");
+        showFlashMessage("Введите R в формате числа (от 1 до 5)");
         return false;
     }
 
@@ -59,7 +66,7 @@ function checkR() {
     if (r.greaterThanOrEqualTo(min) && r.lessThanOrEqualTo(max)) {
         return true;
     } else {
-        alert("Введите R в формате числа (от 1 до 5)");
+        showFlashMessage("Введите R в формате числа (от 1 до 5)");
         return false;
     }
 }
