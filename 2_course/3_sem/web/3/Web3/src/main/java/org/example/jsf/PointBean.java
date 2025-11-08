@@ -74,7 +74,7 @@ public class PointBean implements Serializable {
         p.setDate(LocalDateTime.now(ZoneId.of("Europe/Moscow")));
         p.setCheck(CheckBean.checkHit(x, y, r));
 
-        p.setDuration(System.nanoTime() - start);
+        p.setDuration((System.nanoTime() - start)/1000);
 
         controllerBean.addPoint(p);
     }
