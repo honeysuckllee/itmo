@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import org.example.jsf.CheckBean;
+
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +18,17 @@ import java.util.List;
 @Named("pointBean")
 @SessionScoped
 public class PointBean implements Serializable {
-    private BigDecimal x = null;
+    private BigDecimal x = new BigDecimal("1");
     private BigDecimal y = new BigDecimal("1");
     private BigDecimal r = new BigDecimal("1");
-    private List<Point> results;
+
 
     @Inject
     private ControllerBean controllerBean;
 
     public PointBean() {
     }
-    public List<Point> getResults() {
-        return results;
-    }
 
-    public void setResults(List<Point> results) {
-        this.results = results;
-    }
 
     public BigDecimal getX() {
         return x;
@@ -64,7 +60,6 @@ public class PointBean implements Serializable {
 
     public void send(BigDecimal x, BigDecimal y, BigDecimal r) {
         long start = System.nanoTime();
-        LocalDateTime localDateTime = LocalDateTime.now();
 
         if (x == null || y == null || r == null) {
             return;
@@ -76,7 +71,7 @@ public class PointBean implements Serializable {
         p.setY(y);
         p.setR(r);
 
-        p.setDate(localDateTime);
+        p.setDate(LocalDateTime.now(ZoneId.of("Europe/Moscow")));
         p.setCheck(CheckBean.checkHit(x, y, r));
 
         p.setDuration(System.nanoTime() - start);

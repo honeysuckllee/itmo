@@ -126,11 +126,10 @@
 
                 <!-- Кнопки -->
                 <div class="button-group">
-                    <h:commandButton value="Проверить точку"
-                                     action="#{pointBean.checkPoint}"
-                                     styleClass="check-button"/>
+                    <h:commandButton value="Проверить" action="#{pointBean.submit}"/>
+
                     <h:commandButton value="Очистить результаты"
-                                     action="#{pointBean.clearResults}"
+                                     action="#{controllerBean.clear}"
                                      styleClass="clear-button"/>
                     <h:commandButton value="Вернуться на стартовую"
                                      action="#{navBean.backToIndex}"
@@ -138,12 +137,14 @@
                 </div>
             </div>
 
+
             <div class="table">
                 <h3>История результатов</h3>
                 <div class="scrollable-table">
-                    <h:dataTable value="#{pointBean.results}" var="result"
+                    <h:panelGroup id="resultsPanel">
+                    <h:dataTable value="#{controllerBean.loadResult()}" var="result"
                                  styleClass="result-table"
-                                 rendered="#{not empty pointBean.results}">
+                                 rendered="#{not empty controllerBean.loadResult()}">
                         <h:column>
                             <f:facet name="header">X</f:facet>
                             #{result.x}
@@ -158,22 +159,22 @@
                         </h:column>
                         <h:column>
                             <f:facet name="header">Попадание</f:facet>
-                            <h:outputText value="#{result.hit ? 'Попадание' : 'Промах'}"
+                            <h:outputText value="#{result.check ? 'Попадание' : 'Промах'}"
                                           style="color:#2f184b; font-weight: bold;"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Время</f:facet>
-                            #{result.timestamp}
+                            #{result.date}
                         </h:column>
                         <h:column>
                             <f:facet name="header">Время выполнения</f:facet>
-                            #{result.executionTime} мс
+                            #{result.duration} мс
                         </h:column>
                     </h:dataTable>
+                    </h:panelGroup>
                 </div>
             </div>
         </div>
-
     </h:form>
     <script src="#{request.contextPath}/js/main.js"></script>
 </h:body>

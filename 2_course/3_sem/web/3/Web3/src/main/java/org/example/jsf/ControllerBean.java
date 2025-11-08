@@ -3,14 +3,15 @@ package org.example.jsf;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import org.example.Point;
-import org.example.PointDAO;
+import org.example.util.PointDAO;
 
 import java.io.Serializable;
 import java.util.List;
+@Named("controllerBean")
+@SessionScoped
 
 public class ControllerBean implements Serializable {
     private final PointDAO pointDAO = new PointDAO();
@@ -26,7 +27,9 @@ public class ControllerBean implements Serializable {
     public void setPoints(List<Point> points) {
         this.points = points;
     }
-
+    public List<Point> loadResult(){
+        return points;
+    }
     public void clear() {
         points.clear();
         pointDAO.deleteAll();

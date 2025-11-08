@@ -1,11 +1,13 @@
-package org.example;
+package org.example.util;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.example.Point;
 
 import java.util.List;
-
+@ApplicationScoped
 public class PointDAO {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myPU");
 
