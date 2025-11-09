@@ -56,17 +56,17 @@ function checkR() {
 
     // Проверяем, что y — это корректное число (не NaN)
     if (r.isNaN()) {
-        showFlashMessage("Введите R в формате числа (от 1 до 5)");
+        showFlashMessage("Введите R в формате числа (от 1 до 4)");
         return false;
     }
 
     const min = new Decimal(1);
-    const max = new Decimal(5);
+    const max = new Decimal(4);
 
     if (r.greaterThanOrEqualTo(min) && r.lessThanOrEqualTo(max)) {
         return true;
     } else {
-        showFlashMessage("Введите R в формате числа (от 1 до 5)");
+        showFlashMessage("Введите R в формате числа (от 1 до 4)");
         return false;
     }
 }
@@ -113,12 +113,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkButton = document.querySelector('input[value="Проверить"]');
 
     rSelect.addEventListener('change', function() {
+        if (checkR()){
         updateSvgValues(this.value);
+        }
+        else{
+            rSelect.value = 4;
+            updateSvgValues(4);
+        }
     });
 
 
     if (checkButton) {
         checkButton.addEventListener('click', (e) => {
+            if (!validate()) {
+                e.preventDefault();
+            }
             checkX();
             checkY();
             checkR();

@@ -45,7 +45,6 @@ public class ControllerBean implements Serializable {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
-            System.out.println(mapper.writeValueAsString(points) + "!!!!!!!!!!!!!!");
             return mapper.writeValueAsString(points);
         } catch (Exception e) {
             return "[]";
