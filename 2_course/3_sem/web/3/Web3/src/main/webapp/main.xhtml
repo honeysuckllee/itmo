@@ -133,14 +133,17 @@
                     <h:commandButton value="Проверить" action="#{pointBean.submit}">
                     <f:ajax execute="@form"
                             render="resultsPanel pointsJson"
-                            onevent="onAjaxComplete" />
+                            onevent="onAjaxSubmit" />
                 </h:commandButton>
 
 
                     <h:commandButton value="Очистить результаты"
                                      action="#{controllerBean.clear}"
-                                     styleClass="clear-button"/>
-
+                                     styleClass="clear-button">
+                        <f:ajax execute="@form"
+                                render="resultsPanel pointsJson"
+                                onevent="onAjaxClear" />
+                    </h:commandButton>
 
                     <h:commandButton value="Вернуться на стартовую"
                                      action="#{navBean.backToIndex}"
@@ -193,16 +196,21 @@
             </div>
         </div>
     </h:form>
+
+    <script src="#{request.contextPath}/js/main.js"></script>
+
     <script>
-        function onAjaxComplete(data){
+        function onAjaxSubmit(data){
         if (data.status === 'success') {
-            const jsonEl = document.getElementById('pointsJson');
-            const points = JSON.parse(jsonEl.textContent || jsonEl.innerText);
-            console.log(points);
-            //updateChart(points); // ← твоя функция отрисовки
+            redrawGraphWithCurrentR();
         }
     }
+        function onAjaxClear(data){
+            if (data.status === 'success') {
+                redrawGraphWithCurrentR();
+            }
+        }
     </script>
-    <script src="#{request.contextPath}/js/main.js"></script>
+
 </h:body>
 </html>
