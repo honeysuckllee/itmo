@@ -17,9 +17,11 @@
 
 <h:body>
     <h:form id="mainForm" prependId="false">
+
         <div class="container">
             <!-- График -->
             <div class="graph">
+                <h:panelGroup id="svgPanel">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      width="440"
                      height="440"
@@ -83,6 +85,7 @@
                     <text x="124" y="212" class="r-half-negative-label-x">-R/2</text>
                     <text x="36" y="212" class="r-negative-label-x">-R</text>
                 </svg>
+                </h:panelGroup>
             </div>
 
             <!-- Форма ввода данных -->
@@ -194,6 +197,7 @@
                     </h:panelGroup>
                 </div>
             </div>
+
         </div>
     </h:form>
 

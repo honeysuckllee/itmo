@@ -170,10 +170,59 @@ function redrawGraphWithCurrentR() {
     drawPointsOnGraph(jsonString, currentR);
 }
 
+function clickOnGraph(event) {
+
+    const svg = document.getElementById('graph');
+    const rInput = document.getElementById('rValue');
+    const currentR = parseFloat(rInput.value);
+
+    if (isNaN(currentR) || currentR <= 0) {
+        showFlashMessage("Сначала выберите корректное значение R");
+        return;
+    }
+
+    const pt = svg.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+
+    const svgCoords = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+    const graphX = svgCoords.x - 220;
+    const graphY = 220 - svgCoords.y;
+
+    const scaleFactor = currentR / 176;
+    const mathX = graphX * scaleFactor;
+    const mathY = graphY * scaleFactor;
+
+    const finalX = mathX.toFixed(2);
+    const finalY = mathY.toFixed(2);
+
+    document.getElementById('xValue').value = finalX;
+    document.getElementById('yValue').value = finalY;
+
+    const submitButton = document.querySelector('input[value="Проверить"]');
+    if (submitButton) {
+        jsf.ajax.request(submitButton, event, {
+            execute: '@form',
+            render: 'resultsPanel pointsJson',
+            onevent: onAjaxSubmit
+        });
+    } else {
+        console.error("Кнопка 'Проверить' не найдена для отправки данных с графика.");
+    }
+
+    /*addPointFromClick([
+        {name: 'x', value: roundedX},
+        {name: 'y', value: roundedY},
+        {name: 'r', value: currentR}
+    ]);*/
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const rSelect = document.getElementById("rValue");
     const checkButton = document.querySelector('input[value="Проверить"]');
+    const graph = document.getElementById('graph');
 
     // Первоначальная настройка при загрузке страницы
     const initialR = rSelect.value;
@@ -204,4 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error("Кнопка 'Проверить' не найдена");
     }
+
+    graph.addEventListener('click', (e) => {
+        if (!graph) {
+            e.preventDefault();
+        }else{
+            clickOnGraph(e);
+        }
+    });
+
 });
