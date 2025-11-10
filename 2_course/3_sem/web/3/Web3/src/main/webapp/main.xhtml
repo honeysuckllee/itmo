@@ -131,7 +131,7 @@
                 <!-- Кнопки -->
                 <div class="button-group">
                     <h:commandButton value="Проверить" action="#{pointBean.submit}">
-                    <f:ajax execute="@this"
+                    <f:ajax execute="@form"
                             render="resultsPanel pointsJson"
                             onevent="onAjaxComplete" />
                 </h:commandButton>

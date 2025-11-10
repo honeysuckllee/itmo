@@ -28,6 +28,7 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
+      - "8787:8787"
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432

@@ -4,6 +4,16 @@ function showFlashMessage(message) {
     flash.classList.add('show');
     setTimeout(() => flash.classList.remove('show'), 3000);
 }
+
+function onAjaxComplete(data){
+    if (data.status === 'success') {
+        const jsonEl = document.getElementById('pointsJson');
+        const points = JSON.parse(jsonEl.textContent || jsonEl.innerText);
+        console.log(points);
+        //updateChart(points); // ← твоя функция отрисовки
+    }
+}
+
 function checkX() {
     const xInput = document.getElementById("xValue").value;
     x = parseFloat(xInput);
