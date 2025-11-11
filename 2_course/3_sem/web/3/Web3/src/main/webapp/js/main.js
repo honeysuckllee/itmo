@@ -8,7 +8,7 @@ function showFlashMessage(message) {
 
 function checkX() {
     const xInput = document.getElementById("xValue").value;
-    x = parseFloat(xInput);
+    const x = parseFloat(xInput);
     if (![-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].includes(x)) {
         showFlashMessage("X должен быть целым числом от -5 до 5");
         return false;
@@ -118,7 +118,7 @@ function drawPointsOnGraph(jsonString, currentR) {
         return;
     }
 
-    // 1. Очищаем старые точки
+    // Очищаем старые точки
     const oldPoints = graph.querySelectorAll('circle.point');
     oldPoints.forEach(point => point.remove());
 
@@ -135,6 +135,9 @@ function drawPointsOnGraph(jsonString, currentR) {
     }
 
     const r = parseFloat(currentR);
+
+    let hasOutOfView = false;
+
     if (isNaN(r) || r <= 0) {
         console.error("Текущий радиус R некорректен:", currentR);
         return;
@@ -149,6 +152,10 @@ function drawPointsOnGraph(jsonString, currentR) {
         const cx = 220 + x * scaleFactor;
         const cy = 220 - y * scaleFactor;
 
+        if (cx < 0 || cx > 440 || cy < 0 || cy > 440) {
+            hasOutOfView = true;
+        }
+
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 
         circle.setAttribute('cx', cx);
@@ -161,6 +168,9 @@ function drawPointsOnGraph(jsonString, currentR) {
 
         graph.appendChild(circle);
     });
+    if (hasOutOfView) {
+        showFlashMessage("Некоторые точки не отображены: выходят за пределы графика.");
+    }
 }
 
 function redrawGraphWithCurrentR() {
@@ -200,15 +210,11 @@ function clickOnGraph(event) {
     document.getElementById('xValue').value = finalX;
     document.getElementById('yValue').value = finalY;
 
-    const submitButton = document.querySelector('input[value="Проверить"]');
-    if (submitButton) {
-        jsf.ajax.request(submitButton, event, {
-            execute: '@form',
-            render: 'resultsPanel pointsJson',
-            onevent: onAjaxSubmit
-        });
+    const graphSubmitButton = document.querySelector('input[id$="graphSubmit"]');
+    if (graphSubmitButton) {
+        graphSubmitButton.click();
     } else {
-        console.error("Кнопка 'Проверить' не найдена для отправки данных с графика.");
+        console.error("Кнопка 'Проверить (без валидации)' не найдена.");
     }
 
     /*addPointFromClick([
