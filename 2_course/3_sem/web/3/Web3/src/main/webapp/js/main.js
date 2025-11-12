@@ -1,3 +1,5 @@
+let previousRValue = null;
+
 function showFlashMessage(message) {
     const flash = document.getElementById('flash-message');
     if (!flash) return;
@@ -52,7 +54,6 @@ function checkR() {
         return false;
     }
 
-    // Проверяем, что y — это корректное число (не NaN)
     if (r.isNaN()) {
         showFlashMessage("Введите R в формате числа (от 1 до 4)");
         return false;
@@ -168,7 +169,7 @@ function drawPointsOnGraph(jsonString, currentR) {
 
         graph.appendChild(circle);
     });
-    if (hasOutOfView) {
+    if (hasOutOfView && currentR !== previousRValue) {
         showFlashMessage("Некоторые точки не отображены: выходят за пределы графика.");
     }
 }
@@ -178,6 +179,7 @@ function redrawGraphWithCurrentR() {
     const jsonString = jsonEl.textContent || jsonEl.innerText;
     const currentR = document.getElementById('rValue').value;
     drawPointsOnGraph(jsonString, currentR);
+    previousRValue = currentR;
 }
 
 function clickOnGraph(event) {
@@ -203,9 +205,9 @@ function clickOnGraph(event) {
     const scaleFactor = currentR / 176;
     const mathX = graphX * scaleFactor;
     const mathY = graphY * scaleFactor;
-/*
-    const finalX = mathX.toFixed(2);
-    const finalY = mathY.toFixed(2);*/
+    /*
+        const finalX = mathX.toFixed(2);
+        const finalY = mathY.toFixed(2);*/
 
     document.getElementById('xValue').value = mathX;
     document.getElementById('yValue').value = mathY;
@@ -224,13 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkButton = document.querySelector('input[value="Проверить"]');
     const graph = document.getElementById('graph');
 
-    // Первоначальная настройка при загрузке страницы
     const initialR = rSelect.value;
     if (checkR(initialR)) {
         updateSvgValues(initialR);
+        previousRValue = initialR;
     } else {
         rSelect.value = 4;
         updateSvgValues(4);
+        previousRValue = '4';
     }
     redrawGraphWithCurrentR();
 

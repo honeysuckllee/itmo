@@ -1,6 +1,8 @@
 package org.example.jsf;
 
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.example.Point;
@@ -22,13 +24,11 @@ public class PointBean implements Serializable {
     private BigDecimal y = new BigDecimal("1");
     private BigDecimal r = new BigDecimal("1");
 
-
     @Inject
     private ControllerBean controllerBean;
 
     public PointBean() {
     }
-
 
     public BigDecimal getX() {
         return x;
@@ -54,7 +54,7 @@ public class PointBean implements Serializable {
         this.r = r;
     }
     public boolean checkRange(BigDecimal x, BigDecimal y, BigDecimal r){
-
+        FacesContext context = FacesContext.getCurrentInstance();
         if (x == null || y == null || r == null) {
             return false;
         }
@@ -74,6 +74,7 @@ public class PointBean implements Serializable {
     }
 
     public void submit() {
+
         BigDecimal x = getX();
         BigDecimal y = getY();
         BigDecimal r = getR();
