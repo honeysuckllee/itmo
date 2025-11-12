@@ -92,9 +92,14 @@
             <div class="form">
                 <div class="input-group">
                 <h:outputLabel for="xValue" value="Координата X: " />
-                <p:inputText id="xValue" value="#{pointBean.x}"
-                             style="width: 60px; text-align: center;" />
-                <p:slider for="xValue"
+                <h:inputText id="xValue" value="#{pointBean.x}"
+                             style="width: 60px;
+                             text-align: center;">
+                    <f:validateDoubleRange minimum="-5" maximum="5"/>
+                </h:inputText>
+                    <h:message for="xValue" style="color: red; display: block;"/>
+
+                    <p:slider for="xValue"
                           minValue="-5"
                           maxValue="5"
                           step="1"
@@ -141,8 +146,10 @@
 
 
                     <!-- Кнопка без валидации -->
-                    <h:commandButton id="graphSubmit" value="Проверить (без валидации)" action="#{pointBean.submit}" style="display: none;">
-                        <f:ajax execute="xValue yValue rValue" render="resultsPanel pointsJson" onevent="onAjaxSubmit" />
+                    <h:commandButton id="graphSubmit" value="Проверить (без валидации)" action="#{pointBean.submitWithoutValidation}" style="display: none;">
+                        <f:ajax execute="xValue yValue rValue"
+                                render="resultsPanel pointsJson"
+                                onevent="onAjaxSubmit" />
                     </h:commandButton>
 
 

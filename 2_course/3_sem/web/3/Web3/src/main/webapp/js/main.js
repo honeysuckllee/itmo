@@ -203,12 +203,12 @@ function clickOnGraph(event) {
     const scaleFactor = currentR / 176;
     const mathX = graphX * scaleFactor;
     const mathY = graphY * scaleFactor;
-
+/*
     const finalX = mathX.toFixed(2);
-    const finalY = mathY.toFixed(2);
+    const finalY = mathY.toFixed(2);*/
 
-    document.getElementById('xValue').value = finalX;
-    document.getElementById('yValue').value = finalY;
+    document.getElementById('xValue').value = mathX;
+    document.getElementById('yValue').value = mathY;
 
     const graphSubmitButton = document.querySelector('input[id$="graphSubmit"]');
     if (graphSubmitButton) {
@@ -216,12 +216,6 @@ function clickOnGraph(event) {
     } else {
         console.error("Кнопка 'Проверить (без валидации)' не найдена.");
     }
-
-    /*addPointFromClick([
-        {name: 'x', value: roundedX},
-        {name: 'y', value: roundedY},
-        {name: 'r', value: currentR}
-    ]);*/
 }
 
 

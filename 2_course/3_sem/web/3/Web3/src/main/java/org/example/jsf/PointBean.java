@@ -53,17 +53,44 @@ public class PointBean implements Serializable {
     public void setR(BigDecimal r) {
         this.r = r;
     }
+    public boolean checkRange(BigDecimal x, BigDecimal y, BigDecimal r){
+
+        if (x == null || y == null || r == null) {
+            return false;
+        }
+
+        if (x.compareTo(new BigDecimal("-5")) < 0 || x.compareTo(new BigDecimal("5")) > 0) {
+            return false;
+        }
+
+        if (y.compareTo(new BigDecimal("-5")) < 0 || y.compareTo(new BigDecimal("5")) > 0) {
+            return false;
+        }
+
+        if (r.compareTo(new BigDecimal("1")) < 0 || r.compareTo(new BigDecimal("4")) > 0) {
+            return false;
+        }
+        return true;
+    }
 
     public void submit() {
-        send(getX(), getY(), getR());
+        BigDecimal x = getX();
+        BigDecimal y = getY();
+        BigDecimal r = getR();
+
+        if (x.scale() > 0 && x.stripTrailingZeros().scale() > 0) {
+            return;
+        }
+        if (!checkRange(x, y, r)){
+            return;
+        }
+
+        send(x, y, r);
     }
 
     public void send(BigDecimal x, BigDecimal y, BigDecimal r) {
         long start = System.nanoTime();
 
-        if (x == null || y == null || r == null) {
-            return;
-        }
 
         Point p = new Point();
 
@@ -78,4 +105,15 @@ public class PointBean implements Serializable {
 
         controllerBean.addPoint(p);
     }
+    public void submitWithoutValidation() {
+        BigDecimal x = getX();
+        BigDecimal y = getY();
+        BigDecimal r = getR();
+        if (!checkRange(x, y, r)){
+            return;
+        }
+        send(x, y, r);
+    }
 }
+
+

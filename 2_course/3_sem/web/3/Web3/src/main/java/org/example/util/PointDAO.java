@@ -21,7 +21,7 @@ public class PointDAO {
 
     public List<Point> findAll() {
         EntityManager em = emf.createEntityManager();
-        List<Point> points = em.createQuery("SELECT u FROM Point u", Point.class).getResultList();
+        List<Point> points = em.createQuery("SELECT u FROM Point u ORDER BY u.date DESC", Point.class).getResultList();
         em.close();
         return points;
     }

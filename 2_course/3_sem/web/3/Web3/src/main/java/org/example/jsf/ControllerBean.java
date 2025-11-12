@@ -37,8 +37,8 @@ public class ControllerBean implements Serializable {
     }
 
     public void addPoint(Point point) {
-        points.add(0, point);
         pointDAO.save(point);
+        points = pointDAO.findAll();
     }
 
     public String getPointsAsJson() throws JsonProcessingException {
