@@ -1,14 +1,18 @@
 package org.example.util;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.example.Point;
 
+import java.io.Serializable;
 import java.util.List;
-@ApplicationScoped
-public class PointDAO {
+@Named("pointDAO")
+@SessionScoped
+public class PointDAO implements Serializable {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myPU");
 
     public void save(Point point) {

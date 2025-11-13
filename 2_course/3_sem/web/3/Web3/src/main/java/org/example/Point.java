@@ -9,11 +9,11 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Table(name = "points")
 public class Point {
-    @Column(precision = 19, scale = 4)
+    @Column(precision = 19, scale = 10)
     private BigDecimal x;
-    @Column(precision = 19, scale = 4)
+    @Column(precision = 19, scale = 10)
     private BigDecimal y;
-    @Column(precision = 19, scale = 4)
+    @Column(precision = 19, scale = 10)
     private BigDecimal r;
 
     private long duration;

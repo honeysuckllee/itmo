@@ -1,17 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="myPU">
-        <class>org.example.Point</class>
-        <properties>
-            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://postgres:5432/web3?currentSchema=public"/>
-            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
-            <property name="jakarta.persistence.jdbc.password" value="postgres"/>
-
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
-        </properties>
-    </persistence-unit>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
+<persistence-unit name="myPU">
+    <class>org.example.Point</class>
+    <properties>
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://host.docker.internal:5432/studs"/>        <property name="jakarta.persistence.jdbc.user" value="s467922"/>
+        <property name="jakarta.persistence.jdbc.password" value="Xyn617glEZRF363L"/>
+        <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        <property name="hibernate.hbm2ddl.auto" value="update"/>
+        <property name="hibernate.show_sql" value="true"/>
+    </properties>
+</persistence-unit>
 </persistence>
