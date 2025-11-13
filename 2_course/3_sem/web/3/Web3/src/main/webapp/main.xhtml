@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Web Programming Lab — Main</title>
     <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/main.css" />
+    <script src="#{request.contextPath}/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js"></script>
 </h:head>
 
@@ -221,21 +222,5 @@
 
         </div>
     </h:form>
-
-    <script src="#{request.contextPath}/js/main.js"></script>
-
-    <script>
-        function onAjaxSubmit(data){
-        if (data.status === 'success') {
-            redrawGraphWithCurrentR();
-        }
-    }
-        function onAjaxClear(data){
-            if (data.status === 'success') {
-                redrawGraphWithCurrentR();
-            }
-        }
-    </script>
-
 </h:body>
 </html>

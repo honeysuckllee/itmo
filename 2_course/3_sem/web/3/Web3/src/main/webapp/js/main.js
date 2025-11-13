@@ -266,3 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+function onAjaxSubmit(data){
+    if (data.status === 'success') {
+        redrawGraphWithCurrentR();
+    }
+}
+
+function onAjaxClear(data){
+    if (data.status === 'success') {
+        redrawGraphWithCurrentR();
+    }
+}
