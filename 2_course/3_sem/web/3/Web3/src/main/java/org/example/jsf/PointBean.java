@@ -92,7 +92,6 @@ public class PointBean implements Serializable {
     public void send(BigDecimal x, BigDecimal y, BigDecimal r) {
         long start = System.nanoTime();
 
-
         Point p = new Point();
 
         p.setX(x);

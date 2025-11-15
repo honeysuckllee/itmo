@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.example.Point;
 import org.example.util.PointDAO;
@@ -14,6 +15,7 @@ import java.util.List;
 @SessionScoped
 
 public class ControllerBean implements Serializable {
+
     private final PointDAO pointDAO = new PointDAO();
     private List<Point> points = pointDAO.findAll();
     private String PointsAsJson = "[]";

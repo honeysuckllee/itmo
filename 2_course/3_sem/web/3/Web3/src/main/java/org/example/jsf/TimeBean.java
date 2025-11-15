@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 @SessionScoped
 public class TimeBean implements Serializable {
 
-    private String formattedDateTime;
+    private String formattedTime;
     private long serverTimeMillis;
+    private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private ScheduledExecutorService updater;
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     @PostConstruct
     public void init() {
@@ -34,14 +35,11 @@ public class TimeBean implements Serializable {
         }
     }
     public void update() {
-        ZonedDateTime moscowTime = ZonedDateTime.now(ZoneId.of("Europe/Moscow"));
-        this.formattedDateTime = moscowTime.format(FORMATTER);
-        this.serverTimeMillis = moscowTime.toInstant().toEpochMilli();
-        //this.serverTimeMillis = System.currentTimeMillis();
+        this.serverTimeMillis = System.currentTimeMillis();
     }
 
-    public String getFormattedDateTime() {
-        return formattedDateTime;
+    public String getFormattedTime() {
+        return formattedTime;
     }
 
     public long getServerTimeMillis() {

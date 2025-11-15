@@ -10,8 +10,8 @@ import org.example.Point;
 
 import java.io.Serializable;
 import java.util.List;
-@Named("pointDAO")
-@SessionScoped
+
+@ApplicationScoped
 public class PointDAO implements Serializable {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("myPU");
 

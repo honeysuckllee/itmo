@@ -44,9 +44,7 @@ public class CheckBean implements Serializable {
                 y.compareTo(zero) <= 0 &&
                 x.compareTo(halfR) <= 0) {
             BigDecimal minY = x.subtract(halfR); // y >= x - r/2  <=>  y >= x - halfR
-            if (y.compareTo(minY) >= 0) {
-                return true;
-            }
+            return y.compareTo(minY) >= 0;
         }
         return false;
     }

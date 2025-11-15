@@ -18,7 +18,7 @@ public class Point {
 
     private long duration;
 
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime date;
 
     @Transient
