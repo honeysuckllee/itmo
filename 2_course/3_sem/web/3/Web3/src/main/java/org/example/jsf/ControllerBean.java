@@ -3,6 +3,7 @@ package org.example.jsf;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -16,11 +17,17 @@ import java.util.List;
 
 public class ControllerBean implements Serializable {
 
-    private final PointDAO pointDAO = new PointDAO();
-    private List<Point> points = pointDAO.findAll();
+    @Inject
+    private PointDAO pointDAO;
+
+    private List<Point> points;
     private String PointsAsJson = "[]";
 
     public ControllerBean() {
+    }
+    @PostConstruct
+    public void init() {
+        points = pointDAO.findAll();
     }
 
     public List<Point> getPoints() {

@@ -98,7 +98,7 @@ public class PointBean implements Serializable {
         p.setY(y);
         p.setR(r);
 
-        p.setDate(LocalDateTime.now(ZoneId.of("Europe/Moscow")));
+        p.setDate(LocalDateTime.now());
         p.setCheck(CheckBean.checkHit(x, y, r));
 
         p.setDuration((System.nanoTime() - start)/1000);

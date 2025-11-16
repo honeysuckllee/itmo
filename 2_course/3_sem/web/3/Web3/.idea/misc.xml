@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
@@ -6,6 +7,7 @@
   <component name="ProjectResources">
     <resource url="http://primefaces.org/ui" location="" />
     <resource url="http://xmlns.jcp.org/jsf/html" location="" />
+    <resource url="urn:jboss:module:1.9" location="https://raw.githubusercontent.com/wildfly/wildfly-core/main/wildfly-feature-pack/src/main/resources/modules/schema/jboss-module-1_9.xsd" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jdk-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

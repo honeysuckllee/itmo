@@ -31,7 +31,6 @@ public class CheckBean implements Serializable {
             }
         }
 
-        // === Вторая четверть: прямоугольник ===
         if (x.compareTo(zero) <= 0 &&
                 y.compareTo(zero) >= 0 &&
                 x.compareTo(negHalfR) >= 0 &&
@@ -39,11 +38,10 @@ public class CheckBean implements Serializable {
             return true;
         }
 
-        // === Четвёртая четверть: треугольник ===
         if (x.compareTo(zero) >= 0 &&
                 y.compareTo(zero) <= 0 &&
                 x.compareTo(halfR) <= 0) {
-            BigDecimal minY = x.subtract(halfR); // y >= x - r/2  <=>  y >= x - halfR
+            BigDecimal minY = x.subtract(halfR);
             return y.compareTo(minY) >= 0;
         }
         return false;

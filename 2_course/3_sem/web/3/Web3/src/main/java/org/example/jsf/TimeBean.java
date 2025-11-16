@@ -16,10 +16,7 @@ import java.util.concurrent.TimeUnit;
 @SessionScoped
 public class TimeBean implements Serializable {
 
-    private String formattedTime;
     private long serverTimeMillis;
-    private static final ZoneId DEFAULT_ZONE = ZoneId.systemDefault();
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     private ScheduledExecutorService updater;
 
 
@@ -36,10 +33,6 @@ public class TimeBean implements Serializable {
     }
     public void update() {
         this.serverTimeMillis = System.currentTimeMillis();
-    }
-
-    public String getFormattedTime() {
-        return formattedTime;
     }
 
     public long getServerTimeMillis() {
