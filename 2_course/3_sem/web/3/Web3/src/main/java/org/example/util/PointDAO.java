@@ -17,6 +17,7 @@ import java.util.List;
 public class PointDAO implements Serializable {
     @PersistenceContext(unitName = "myPU")
     private EntityManager em;
+    @Transactional
     public void save(Point point) {
         em.persist(point);
     }

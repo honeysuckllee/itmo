@@ -10,11 +10,11 @@ import java.io.Serializable;
 public class NavigationBean implements Serializable {
 
     public String goToMain() {
-        return "main.xhtml?faces-redirect=true";
+        return "main";
     }
 
     public String backToIndex() {
-        return "index.xhtml?faces-redirect=true";
+        return "index";
     }
 }
 
