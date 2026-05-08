@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Web Programming Lab — Main</title>
+    <link rel="stylesheet" type="text/css" href="#{request.contextPath}/css/main.css" />
+    <script src="#{request.contextPath}/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/decimal.js@10.4.3/decimal.min.js"></script>
+</h:head>
+
+<h:body>
+    <h:form id="mainForm" prependId="false">
+
+        <div class="container">
+            <!-- График -->
+            <div class="graph">
+                <h:panelGroup id="svgPanel">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="440"
+                     height="440"
+                     id="graph"
+                     role="application"
+                     aria-label="Виртуальный график.">
+
+                    <rect x="44" y="132" width="176" height="88" fill="black" stroke="none"/>
+
+                    <defs>
+                        <clipPath id="quadrant3">
+                            <rect x="44" y="220" width="176" height="176"/>
+                        </clipPath>
+                    </defs>
+                    <circle cx="220" cy="220" r="176" fill="black" stroke="none" clip-path="url(#quadrant3)"/>
+
+                    <polygon points="220,220 308,220 220,308" fill="black" stroke="none"/>
+
+                    <line x1="220" y1="0" x2="220" y2="440" stroke="black" stroke-width="2"/>
+                    <line x1="0" y1="220" x2="440" y2="220" stroke="black" stroke-width="2"/>
+
+                    <line x1="215" y1="5" x2="225" y2="5" stroke="black" stroke-width="2"/>
+                    <line x1="220" y1="0" x2="215" y2="5" stroke="black" stroke-width="2"/>
+                    <line x1="220" y1="0" x2="225" y2="5" stroke="black" stroke-width="2"/>
+                    <text x="226" y="20">y</text>
+
+                    <line x1="435" y1="215" x2="435" y2="225" stroke="black" stroke-width="2"/>
+                    <line x1="440" y1="220" x2="435" y2="215" stroke="black" stroke-width="2"/>
+                    <line x1="440" y1="220" x2="435" y2="225" stroke="black" stroke-width="2"/>
+                    <text x="420" y="235">x</text>
+
+                    <line x1="215" y1="44" x2="225" y2="44" stroke="black" stroke-width="2"/>
+                    <line x1="215" y1="132" x2="225" y2="132" stroke="black" stroke-width="2"/>
+                    <line x1="215" y1="308" x2="225" y2="308" stroke="black" stroke-width="2"/>
+                    <line x1="215" y1="396" x2="225" y2="396" stroke="black" stroke-width="2"/>
+
+                    <line x1="308" y1="215" x2="308" y2="225" stroke="black" stroke-width="2"/>
+                    <line x1="396" y1="215" x2="396" y2="225" stroke="black" stroke-width="2"/>
+                    <line x1="132" y1="215" x2="132" y2="225" stroke="black" stroke-width="2"/>
+                    <line x1="44" y1="215" x2="44" y2="225" stroke="black" stroke-width="2"/>
+
+                    <text x="228" y="48" class="r-label">R</text>
+                    <text x="228" y="136" class="r-half-label">R/2</text>
+                    <text x="228" y="312" class="r-half-negative-label">-R/2</text>
+                    <text x="228" y="400" class="r-negative-label">-R</text>
+
+                    <text x="300" y="212" class="r-half-label-x">R/2</text>
+                    <text x="388" y="212" class="r-label-x">R</text>
+                    <text x="124" y="212" class="r-half-negative-label-x">-R/2</text>
+                    <text x="36" y="212" class="r-negative-label-x">-R</text>
+                </svg>
+                </h:panelGroup>
+            </div>
+
+            <!-- Форма ввода данных -->
+            <div class="form">
+                <div class="input-group">
+                <h:outputLabel for="xValue" value="Координата X: " />
+                <h:inputText id="xValue" value="#{pointBean.x}"
+                             style="width: 60px;
+                             text-align: center;">
+                    <f:validateDoubleRange minimum="-5" maximum="5"/>
+                </h:inputText>
+                    <h:message for="xValue" style="color: red; display: block;"/>
+
+                    <p:slider for="xValue"
+                          minValue="-5"
+                          maxValue="5"
+                          step="1"
+                          showRange="true"
+                          style="width: 200px; margin-top: 8px;"
+                          styleClass="slider"/>
+            </div>
+
+                <!-- Координата Y: InputText -->
+                <div class="input-group">
+                    <h:outputLabel for="yValue" value="Координата Y: " />
+                    <h:inputText id="yValue"
+                                 value="#{pointBean.y}"
+                                 required="true"
+                                 requiredMessage="Y обязателен для ввода">
+                        <f:validateDoubleRange minimum="-5" maximum="5"/>
+                    </h:inputText>
+                    <h:message for="yValue" style="color: red; display: block;"/>
+                </div>
+
+                <!-- Радиус R: InputText -->
+                <div class="input-group">
+                    <h:outputLabel for="rValue" value="Радиус R: " />
+                    <h:inputText id="rValue"
+                                 value="#{pointBean.r}"
+                                 required="true"
+                                 requiredMessage="R обязателен для ввода">
+                        <f:validateDoubleRange minimum="1" maximum="4"/>
+                    </h:inputText>
+                    <h:message for="rValue" style="color: red; display: block;"/>
+                </div>
+
+                <div class="flash-container">
+                    <div id="flash-message">
+
+                    </div>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="button-group">
+                    <h:commandButton value="Проверить" action="#{pointBean.submit}">
+                    <f:ajax execute="@form"
+                            render="resultsPanel pointsJson"
+                            onevent="onAjaxSubmit" />
+                </h:commandButton>
+
+
+                    <!-- Кнопка без валидации -->
+                    <h:commandButton id="graphSubmit" value="Проверить (без валидации)" action="#{pointBean.submitWithoutValidation}" style="display: none;">
+                        <f:ajax execute="xValue yValue rValue"
+                                render="resultsPanel pointsJson"
+                                onevent="onAjaxSubmit" />
+                    </h:commandButton>
+
+
+                    <h:commandButton value="Очистить результаты"
+                                     action="#{controllerBean.clear}"
+                                     styleClass="clear-button">
+                        <f:ajax execute="@form"
+                                render="resultsPanel pointsJson"
+                                onevent="onAjaxClear" />
+                    </h:commandButton>
+
+                    <h:commandButton value="Вернуться на стартовую"
+                                     action="#{navBean.backToIndex}"
+                                     styleClass="back-button"/>
+
+                    <h:outputText id="pointsJson"
+                                  value="#{controllerBean.pointsAsJson}"
+                                  escape="false"
+                                  style="display:none;" />
+
+                </div>
+            </div>
+
+
+            <div class="table">
+                <h3>История результатов</h3>
+                <div class="scrollable-table">
+                    <h:panelGroup id="resultsPanel">
+                    <h:dataTable value="#{controllerBean.loadResult()}" var="result"
+                                 styleClass="result-table"
+                                 rendered="#{not empty controllerBean.loadResult()}">
+                        <h:column>
+                            <f:facet name="header">X</f:facet>
+                            <h:outputText value="#{result.x}">
+                                <f:convertNumber minFractionDigits="4" maxFractionDigits="4" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Y</f:facet>
+                            <h:outputText value="#{result.y}">
+                                <f:convertNumber minFractionDigits="4" maxFractionDigits="4" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">R</f:facet>
+                            <h:outputText value="#{result.r}">
+                                <f:convertNumber minFractionDigits="4" maxFractionDigits="4" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Попадание</f:facet>
+                            <h:outputText value="#{result.check ? 'Попадание' : 'Промах'}"
+                                          style="color:#2f184b; font-weight: bold;"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Время</f:facet>
+                            #{result.formattedDate}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Время выполнения</f:facet>
+                            #{result.duration} мс
+                        </h:column>
+                    </h:dataTable>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+        </div>
+    </h:form>
+</h:body>
+</html>

@@ -1,0 +1,8 @@
+src/main/java/org/example/Point.java
+src/main/java/org/example/Main.java
+src/main/java/org/example/jsf/CheckBean.java
+src/main/java/org/example/jsf/ControllerBean.java
+src/main/java/org/example/jsf/NavigationBean.java
+src/main/java/org/example/jsf/PointBean.java
+src/main/java/org/example/jsf/TimeBean.java
+src/main/java/org/example/util/PointDAO.java

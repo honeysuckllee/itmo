@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="OPI3" default="compile" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property file="build.properties"/>
+    <!--добавление библиотеки для <if> <for> <var>-->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${basedir}/lib/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="*.jar" />
+    </path>
+
+    <target name="download-ivy" description="Загружает JAR-файл Apache Ivy для управления зависимостями проекта">
+        <mkdir dir="${ivy.jar.dir}"/>
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="install-ivy" depends="download-ivy" description="Подключает Apache Ivy к Ant, регистрирует задачи">
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+
+    <target name="init-libs" depends="install-ivy" description="Загрузка зависимостей через Ivy">
+        <echo message="Вызов Ivy для скачивания библиотек..."/>
+        <mkdir dir="${lib.dir}"/>
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision](-[classifier]).[ext]" sync="true" type="jar,bundle"/>
+        <echo message="Библиотеки успешно загружены в папку ${lib.dir}/"/>
+    </target>
+
+    <target name="compile" depends="init-libs" description="Компиляция исходных кодов проекта">
+        <mkdir dir="${classes.dir}" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" encoding="UTF-8">
+            <classpath refid="classpath" />
+        </javac>
+        <echo message="Компиляция успешно завершена." />
+    </target>
+
+    <target name="clean" description="Удаление скомпилированных классов и всех временных файлов">
+        <delete dir="${build.dir}" failonerror="false" />
+        <delete dir="${test.reports.dir}" failonerror="false" />
+        <delete failonerror="false">
+            <fileset dir="${src.dir}">
+                <include name="**/*.MD5"/>
+                <include name="**/*.SHA-1"/>
+                <include name="**/*.md5"/>
+                <include name="**/*.sha1"/>
+            </fileset>
+        </delete>
+        <echo message="Очистка завершена" />
+    </target>
+
+    <target name="build" depends="compile" description="Упаковка кода в jar-архив">
+        <mkdir dir="${build.dir}" />
+
+        <jar destfile="${build.dir}/${jar.name}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Manifest-Version" value="1.0" />
+                <attribute name="Implementation-Version" value="1.0-SNAPSHOT" />
+                <attribute name="Main-Class" value="${main.class}" />
+            </manifest>
+        </jar>
+        <echo message="JAR-архив успешно создан: ${build.dir}/${jar.name}" />
+    </target>
+
+    <target name="test" depends="build" description="Запуск junit-тестов">
+        <echo message="Компиляция и запуск тестов..." />
+
+        <mkdir dir="${test.classes.dir}" />
+        <mkdir dir="${test.reports.dir}" />
+
+        <javac srcdir="${test.src.dir}"
+               destdir="${test.classes.dir}"
+               includeantruntime="false"
+               encoding="UTF-8">
+            <classpath>
+                <path refid="classpath" />
+                <pathelement location="${classes.dir}" />
+            </classpath>
+        </javac>
+
+        <junit printsummary="yes" haltonfailure="true" failureproperty="tests.failed">
+            <classpath>
+                <path refid="classpath" />
+                <pathelement location="${classes.dir}" />
+                <pathelement location="${test.classes.dir}" />
+            </classpath>
+
+            <formatter type="xml" />
+            <batchtest fork="yes" todir="${test.reports.dir}">
+                <fileset dir="${test.src.dir}">
+                    <include name="**/*Test.java" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <echo message="Все тесты пройдены!" />
+        <condition property="tests.passed">
+            <not><isset property="tests.failed"/></not>
+        </condition>
+    </target>
+
+    <target name="report" depends="test" if="tests.passed" description="При успешных тестах — сохранить JUnit XML в SVN">
+        <echo message="Сохранение отчётов JUnit в SVN..." />
+
+        <exec executable="svn" dir="${basedir}" failonerror="false">
+            <arg value="add"/>
+            <arg value="--force"/> <!--не ругаться если файл уже отслеживается-->
+            <arg value="${test.reports.dir}/TEST-*.xml"/>
+        </exec>
+
+        <exec executable="svn" dir="${basedir}" failonerror="false">
+            <arg value="commit"/>
+            <arg value="-m"/>
+            <arg value="Add JUnit test report"/>
+            <arg value="${test.reports.dir}/TEST-*.xml"/>
+        </exec>
+
+        <exec executable="svn" failonerror="false">
+            <arg value="update"/>
+        </exec>
+    </target>
+
+    <target name="xml" description="валидация xml-файлов в проекте">
+        <echo message="Проверка синтаксиса XML-файлов..." />
+        <xmlvalidate failonerror="false" lenient="yes">
+            <fileset dir="${basedir}" includes="**/*.xml" excludes="node_modules/**, .idea/**, build/**, **/test-error.xml" />
+        </xmlvalidate>
+        <echo message="Валидация XML завершена." />
+    </target>
+
+    <target name="doc" depends="compile,manifest,javadoc" description="добавление в MANIFEST.MF MD5 и SHA-1 файлов проекта, а также генерация и добавление в архив javadoc по всем классам проекта">
+        <jar destfile="${build.dir}/${jar.name}"
+             basedir="${classes.dir}"
+             manifest="${build.dir}/MANIFEST.MF"
+             update="true">
+            <fileset dir="${build.dir}" includes="doc/**"/>
+        </jar>
+        <echo message="Jar обновлён: добавлены хеши и javadoc"/>
+    </target>
+
+    <target name="checksums">
+        <checksum totalproperty="project.md5" algorithm="MD5">
+            <fileset dir="${src.dir}"/>
+        </checksum>
+        <checksum totalproperty="project.sha1" algorithm="SHA-1">
+            <fileset dir="${src.dir}"/>
+        </checksum>
+        <echo message="MD5: ${project.md5}"/>
+        <echo message="SHA-1: ${project.sha1}"/>
+    </target>
+
+    <target name="manifest" depends="checksums">
+        <manifest file="${build.dir}/MANIFEST.MF">
+            <attribute name="Manifest-Version" value="1.0"/>
+            <attribute name="Implementation-Version" value="1.0-SNAPSHOT"/>
+            <attribute name="Main-Class" value="${main.class}"/>
+            <attribute name="MD5-Digest" value="${project.md5}"/>
+            <attribute name="SHA1-Digest" value="${project.sha1}"/>
+        </manifest>
+        <echo message="MANIFEST.MF создан"/>
+    </target>
+
+    <target name="javadoc">
+        <mkdir dir="${build.dir}/doc"/>
+        <javadoc destdir="${build.dir}/doc" sourcepath="${src.dir}" encoding="UTF-8">
+            <classpath refid="classpath"/>
+            <fileset dir="${src.dir}" includes="**/*.java"/>
+        </javadoc>
+        <echo message="Javadoc сгенерирован в ${build.dir}/doc"/>
+    </target>
+
+    <target name="native2ascii" description="преобразование native2ascii для копий файлов локализации">
+        <echo message="Запуск native2ascii для файлов локализации..." />
+        <mkdir dir="${classes.dir}" />
+        <native2ascii
+                src="${resources.dir}"
+                dest="${classes.dir}"
+                includes="**/*.properties"
+                encoding="UTF-8"
+        />
+        <echo message="Конвертация native2ascii завершена" />
+    </target>
+
+    <target name="scp" depends="build" description="Перемещение проекта по scp на сервер">
+        <input message="Введите SSH пароль:" addproperty="ssh.password" />
+
+        <exec executable="cmd" failonerror="true">
+            <arg value="/c"/>
+            <arg value="ant"/>
+            <arg value="-lib"/>
+            <arg value="lib"/>
+            <arg value="-f"/>
+            <arg value="${basedir}/build.xml"/>
+            <arg value="-Dssh.password=${ssh.password}"/>
+            <arg value="scp-internal"/>
+        </exec>
+    </target>
+
+    <target name="scp-internal" description="отправка файла">
+        <scp file="${build.dir}/${jar.name}"
+             todir="${ssh.user}:${ssh.password}@${ssh.host}:${ssh.remote.path}"
+             port="${ssh.port}"
+             trust="true"/>
+        <echo message="Файл ${jar.name} успешно загружен на сервер!" />
+    </target>
+
+    <target name="get-head">
+        <exec executable="svn" outputproperty="svn.info" failonerror="true">
+            <arg value="info"/>
+            <arg value="${svn.repo.url}"/>
+        </exec>
+
+        <propertyregex property="head.rev"
+                       input="${svn.info}"
+                       regexp="Revision:\s*([0-9]+)"
+                       select="\1"
+                       override="true"/>
+        <echo message="HEAD revision = ${head.rev}"/>
+    </target>
+
+    <target name="team" depends="get-head" description="осуществляет получение из svn-репозитория 3 предыдущих ревизий, их сборку и упаковку получившихся jar-файлов в zip-архив.">
+        <delete dir="${team.dir}" failonerror="false"/>
+        <mkdir dir="${team.dir}"/>
+        <mkdir dir="${team.jars.dir}"/>
+        <!--сохраняем в свойства номера 3 предыдущих ревизий-->
+        <exec executable="cmd" outputproperty="r1"><arg value="/c"/><arg value="set /a ${head.rev}-1"/></exec>
+        <exec executable="cmd" outputproperty="r2"><arg value="/c"/><arg value="set /a ${head.rev}-2"/></exec>
+        <exec executable="cmd" outputproperty="r3"><arg value="/c"/><arg value="set /a ${head.rev}-3"/></exec>
+
+        <antcall target="build-rev"><param name="rev" value="${r1}"/></antcall>
+        <antcall target="build-rev"><param name="rev" value="${r2}"/></antcall>
+        <antcall target="build-rev"><param name="rev" value="${r3}"/></antcall>
+
+        <zip destfile="${build.dir}/${team.zip.name}">
+            <fileset dir="${team.jars.dir}" includes="*.jar"/>
+        </zip>
+        <echo message="Архив создан: ${build.dir}/${team.zip.name}"/>
+    </target>
+
+    <target name="build-rev">
+        <local name="rev.dir"/>
+        <property name="rev.dir" location="${team.dir}/r${rev}"/>
+        <delete dir="${rev.dir}" failonerror="false"/>
+        <exec executable="svn" failonerror="true">
+            <arg value="export"/>
+            <arg value="-r"/>
+            <arg value="${rev}"/>
+            <arg value="${svn.repo.url}/trunk"/>
+            <arg value="${rev.dir}"/>
+        </exec>
+
+        <ant dir="${rev.dir}" target="build" inheritAll="false">
+            <property name="build.dir" value="${rev.dir}/build"/>
+        </ant>
+
+        <copy file="${rev.dir}/build/${jar.name}"
+              tofile="${team.jars.dir}/Web3Lab-r${rev}.jar"/>
+    </target>
+
+    <target name="alt" description="Создание альтернативной версии с изменёнными именами классов и переменных">
+        <echo message="Создание альтернативной версии" />
+
+        <property name="alt.build.dir" value="${build.dir}/alt"/>
+        <property name="alt.src.dir" value="${alt.build.dir}/src"/>
+        <property name="alt.classes.dir" value="${alt.build.dir}/classes"/>
+        <property name="alt.jar.name" value="alt-${jar.name}"/>
+
+        <delete dir="${alt.build.dir}" failonerror="false"/>
+        <mkdir dir="${alt.src.dir}"/>
+        <mkdir dir="${alt.classes.dir}"/>
+
+        <copy todir="${alt.src.dir}">
+            <fileset dir="${src.dir}"/>
+        </copy>
+
+        <replaceregexp byline="true" flags="g">
+            <fileset dir="${alt.src.dir}" includes="**/*.java"/>
+            <regexp pattern="\b(CheckBean|ControllerBean|NavigationBean|PointBean|TimeBean|PointDAO|Main|Point)\b"/>
+            <substitution expression="Alt\1"/>
+        </replaceregexp>
+
+        <move file="${alt.src.dir}/org/example/Main.java"
+              tofile="${alt.src.dir}/org/example/AltMain.java"/>
+        <move file="${alt.src.dir}/org/example/Point.java"
+              tofile="${alt.src.dir}/org/example/AltPoint.java"/>
+        <move file="${alt.src.dir}/org/example/jsf/CheckBean.java"
+              tofile="${alt.src.dir}/org/example/jsf/AltCheckBean.java"/>
+        <move file="${alt.src.dir}/org/example/jsf/ControllerBean.java"
+              tofile="${alt.src.dir}/org/example/jsf/AltControllerBean.java"/>
+        <move file="${alt.src.dir}/org/example/jsf/NavigationBean.java"
+              tofile="${alt.src.dir}/org/example/jsf/AltNavigationBean.java"/>
+        <move file="${alt.src.dir}/org/example/jsf/PointBean.java"
+              tofile="${alt.src.dir}/org/example/jsf/AltPointBean.java"/>
+        <move file="${alt.src.dir}/org/example/jsf/TimeBean.java"
+              tofile="${alt.src.dir}/org/example/jsf/AltTimeBean.java"/>
+        <move file="${alt.src.dir}/org/example/util/PointDAO.java"
+              tofile="${alt.src.dir}/org/example/util/AltPointDAO.java"/>
+
+        <echo message="Имена заменены. Собираем альтернативный jar..."/>
+
+        <antcall target="build">
+            <param name="src.dir" value="${alt.src.dir}"/>
+            <param name="classes.dir" value="${alt.classes.dir}"/>
+            <param name="build.dir" value="${alt.build.dir}"/>
+            <param name="jar.name" value="${alt.jar.name}"/>
+            <param name="main.class" value="org.example.AltMain"/>
+        </antcall>
+
+        <echo message="Альтернативная версия создана: ${alt.build.dir}/${alt.jar.name}"/>
+    </target>
+
+    <target name="diff">
+        <exec executable="git" outputproperty="git.status.content">
+            <arg value="status"/>
+            <arg value="--porcelain"/>
+        </exec>
+
+        <loadfile property="git.watch.content" srcFile="${git.watch.file}" />
+
+        <var name="git.need.commit" value="false"/>
+
+        <for list="${git.watch.content}" delimiter="${line.separator}" param="watchedFile">
+            <sequential>
+                <if>
+                    <contains string="${git.status.content}" substring="@{watchedFile}" />
+                    <then>
+                        <echo message="Найдено изменение в: @{watchedFile}" />
+
+                        <exec executable="git" failonerror="true">
+                            <arg value="add"/>
+                            <arg value="@{watchedFile}"/>
+                        </exec>
+
+                        <var name="git.need.commit" value="true"/>
+                    </then>
+                </if>
+            </sequential>
+        </for>
+
+        <if>
+            <equals arg1="${git.need.commit}" arg2="true"/>
+            <then>
+                <exec executable="git" failonerror="true">
+                    <arg value="commit"/>
+                    <arg value="-m"/>
+                    <arg value="Auto-commit: update java files"/>
+                </exec>
+                <echo message="Коммит выполнен успешно." />
+            </then>
+            <else>
+                <echo message="Нет изменений в отслеживаемых файлах."/>
+            </else>
+        </if>
+    </target>
+
+    <target name="history" description="Поиск работающего коммита и формирование diff">
+        <echo message="Запуск поиска работающей ревизии" />
+
+        <var name="commit.bad" value=""/>
+        <var name="is.working" value="false"/>
+        <exec executable="git" outputproperty="git.commit.count">
+            <arg value="rev-list"/>
+            <arg value="--count"/>
+            <arg value="HEAD"/>
+        </exec>
+        <echo message="Всего коммитов для проверки: ${git.commit.count}"/>
+
+        <for begin="1" end="${git.commit.count}" param="i">
+            <sequential>
+                <if>
+                    <equals arg1="${is.working}" arg2="false"/>
+                    <then>
+                        <var name="current.hash" unset="true"/>
+                        <var name="compile.result" unset="true"/>
+                        <var name="checkout.result" unset="true"/>
+
+                        <exec executable="git" outputproperty="current.hash">
+                            <arg value="rev-parse"/>
+                            <arg value="HEAD"/>
+                        </exec>
+
+                        <echo message="Шаг @{i}. Проверяем коммит: ${current.hash}"/>
+
+                        <antcall target="clean" />
+
+                        <exec executable="cmd" resultproperty="compile.result" failonerror="false">
+                            <arg value="/c"/>
+                            <arg value="ant"/>
+                            <arg value="compile"/>
+                            <arg value="-q"/>
+                        </exec>
+
+                        <if>
+                            <equals arg1="${compile.result}" arg2="0"/>
+                            <then>
+                                <echo message="[УСПЕХ] Найдена рабочая ревизия: ${current.hash}" />
+                                <var name="is.working" value="true"/>
+
+                                <if>
+                                    <not><equals arg1="${commit.bad}" arg2=""/></not>
+                                    <then>
+                                        <echo message="Формируем diff с коммитом ${commit.bad}..." />
+                                        <exec executable="git" output="history-diff.txt">
+                                            <arg value="diff"/>
+                                            <arg value="${current.hash}"/>
+                                            <arg value="${commit.bad}"/>
+                                        </exec>
+                                        <echo message="Результат сохранен в history-diff.txt" />
+                                    </then>
+                                    <else>
+                                        <echo message="Текущая HEAD-ревизия успешна с самого начала. Diff не требуется."/>
+                                    </else>
+                                </if>
+                            </then>
+                            <else>
+                                <echo message="[ОШИБКА] Сборка упала. Идем назад..." />
+
+                                <var name="commit.bad" value="${current.hash}"/>
+
+                                <exec executable="git" failonerror="false" resultproperty="checkout.result">
+                                    <arg value="checkout"/>
+                                    <arg value="HEAD~1"/>
+                                </exec>
+
+                                <if>
+                                    <not><equals arg1="${checkout.result}" arg2="0"/></not>
+                                    <then>
+                                        <echo message="Достигнута самая первая ревизия репозитория! Дальше идти некуда."/>
+                                        <var name="is.working" value="true"/>
+                                    </then>
+                                </if>
+                            </else>
+                        </if>
+                    </then>
+                </if>
+            </sequential>
+        </for>
+    </target>
+
+    <target name="env" description="осуществляет сборку и запуск программы в альтернативных окружениях; окружение задается версией java и набором аргументов виртуальной машины в файле параметров">
+        <fail message="Не задан env.java.home в build.properties">
+            <condition><not><isset property="env.java.home"/></not></condition>
+        </fail>
+
+        <echo message="Запуск в альтернативном окружении"/>
+        <echo message="JDK: ${env.java.home}"/>
+
+        <property name="alt.javac" value="${env.java.home}/bin/javac"/>
+        <property name="alt.java" value="${env.java.home}/bin/java"/>
+        <delete dir="${classes.dir}" failonerror="false"/>
+        <mkdir dir="${classes.dir}"/>
+
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               includeantruntime="false"
+               encoding="UTF-8"
+               executable="${alt.javac}"
+               fork="yes">
+            <classpath refid="classpath"/>
+        </javac>
+
+        <exec executable="cmd" outputproperty="actual.java.version" failonerror="false">
+            <arg value="/c"/>
+            <arg value='"${alt.java}" -version 2>&amp;1'/>
+        </exec>
+        <echo message="Фактическая версия JDK: ${actual.java.version}"/>
+
+        <echo message="Запуск программы..."/>
+
+        <java classname="${main.class}" fork="true" jvm="${alt.java}">
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+                <path refid="classpath"/>
+            </classpath>
+            <jvmarg line="${env.jvm.args}"/>
+        </java>
+    </target>
+
+    <target name="music" depends="build" description="Музыка после сборки">
+        <sound>
+            <success source="${sound.dir}/${sound.success}" loops="0"/>
+            <fail source="${sound.dir}/${sound.fail}" loops="0"/>
+        </sound>
+    </target>
+
+</project>

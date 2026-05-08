@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.10.17
+Created-By: 22.0.1+8-16 (Oracle Corporation)
+Implementation-Version: 1.0-SNAPSHOT
+Main-Class: org.example.Main
+MD5-Digest: 6d421464c16526036c2eb18cb3df5166
+SHA1-Digest: 421dc14df4ec31df84203b457d8cb6261112f762
+

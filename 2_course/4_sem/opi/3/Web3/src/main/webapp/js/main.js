@@ -1,0 +1,280 @@
+let previousRValue = null;
+
+function showFlashMessage(message) {
+    const flash = document.getElementById('flash-message');
+    if (!flash) return;
+    flash.textContent = message;
+    flash.classList.add('show');
+    setTimeout(() => flash.classList.remove('show'), 3000);
+}
+
+function checkX() {
+    const xInput = document.getElementById("xValue").value;
+    const x = parseFloat(xInput);
+    if (![-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5].includes(x)) {
+        showFlashMessage("X должен быть целым числом от -5 до 5");
+        return false;
+    }
+    return true;
+}
+
+function checkY() {
+    const yInput = document.getElementById("yValue").value;
+    let y;
+    try {
+        y = new Decimal(yInput);
+    } catch (e) {
+        showFlashMessage("Введите Y в формате числа (от -5 до 5)");
+        return false;
+    }
+
+    if (y.isNaN()) {
+        showFlashMessage("Введите Y в формате числа (от -5 до 5)");
+        return false;
+    }
+
+    const min = new Decimal(-5);
+    const max = new Decimal(5);
+
+    if (y.greaterThanOrEqualTo(min) && y.lessThanOrEqualTo(max)) {
+        return true;
+    } else {
+        showFlashMessage("Y должен быть в диапазоне от -5 до 5");
+        return false;
+    }
+}
+
+function checkR() {
+    const rInput = document.getElementById("rValue").value;
+    let r;
+    try {
+        r = new Decimal(rInput);
+    } catch (e) {
+        showFlashMessage("Введите R в формате числа (от 1 до 4)");
+        return false;
+    }
+
+    if (r.isNaN()) {
+        showFlashMessage("Введите R в формате числа (от 1 до 4)");
+        return false;
+    }
+
+    const min = new Decimal(1);
+    const max = new Decimal(4);
+
+    if (r.greaterThanOrEqualTo(min) && r.lessThanOrEqualTo(max)) {
+        return true;
+    } else {
+        showFlashMessage("R должен быть в диапазоне от 1 до 4");
+        return false;
+    }
+}
+
+
+function validate(){
+    return checkX() && checkY() && checkR();
+}
+
+function updateSvgValues(selectedR) {
+    if (!selectedR) return;
+
+    const r = parseFloat(selectedR);
+    if (isNaN(r)) return;
+    const rHalf = (r / 2);
+
+    document.querySelectorAll('.r-label, .r-label-x').forEach(el => {
+        el.textContent = r;
+    });
+
+    document.querySelectorAll('.r-half-label, .r-half-label-x').forEach(el => {
+        el.textContent = rHalf;
+    });
+
+    document.querySelectorAll('.r-half-negative-label, .r-half-negative-label-x').forEach(el => {
+        el.textContent = '-' + rHalf;
+    });
+
+    document.querySelectorAll('.r-negative-label, .r-negative-label-x').forEach(el => {
+        el.textContent = '-' + r;
+    });
+}
+
+function isInArea(x, y, r) {
+    if (x >= -r && x <= 0 && y >= 0 && y <= r / 2) {
+        return true;
+    }
+    if (x <= 0 && y <= 0 && (x * x + y * y <= r * r)) {
+        return true;
+    }
+    if (x >= 0 && y <= 0 && y >= x - r / 2) {
+        return true;
+    }
+    return false;
+}
+
+function drawPointsOnGraph(jsonString, currentR) {
+    const graph = document.getElementById('graph');
+    if (!graph) {
+        console.error("Элемент графика с id='graph' не найден!");
+        return;
+    }
+
+    // Очищаем старые точки
+    const oldPoints = graph.querySelectorAll('circle.point');
+    oldPoints.forEach(point => point.remove());
+
+    let points;
+    try {
+        points = JSON.parse(jsonString);
+    } catch (e) {
+        console.error("Не удалось распарсить JSON:", e);
+        return;
+    }
+
+    if (!Array.isArray(points) || points.length === 0) {
+        return;
+    }
+
+    const r = parseFloat(currentR);
+
+    let hasOutOfView = false;
+
+    if (isNaN(r) || r <= 0) {
+        console.error("Текущий радиус R некорректен:", currentR);
+        return;
+    }
+
+    points.forEach(pointData => {
+        const { x, y } = pointData;
+
+        const isHit = isInArea(x, y, r);
+
+        const scaleFactor = 176 / r;
+        const cx = 220 + x * scaleFactor;
+        const cy = 220 - y * scaleFactor;
+
+        if (cx < 0 || cx > 440 || cy < 0 || cy > 440) {
+            hasOutOfView = true;
+        }
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', '5'); // Радиус точки на графике
+        circle.setAttribute('id', isHit ? 'hit' : ''); // Зеленый/Красный
+        circle.setAttribute('stroke', 'white');
+        circle.setAttribute('stroke-width', '1');
+        circle.setAttribute('class', 'point'); // Класс для очистки
+
+        graph.appendChild(circle);
+    });
+    if (hasOutOfView && currentR !== previousRValue) {
+        showFlashMessage("Некоторые точки не отображены: выходят за пределы графика.");
+    }
+}
+
+function redrawGraphWithCurrentR() {
+    const jsonEl = document.getElementById('pointsJson');
+    const jsonString = jsonEl.textContent || jsonEl.innerText;
+    const currentR = document.getElementById('rValue').value;
+    drawPointsOnGraph(jsonString, currentR);
+    previousRValue = currentR;
+}
+
+function clickOnGraph(event) {
+
+    const svg = document.getElementById('graph');
+    const rInput = document.getElementById('rValue');
+    const currentR = parseFloat(rInput.value);
+
+    if (isNaN(currentR) || currentR <= 0) {
+        showFlashMessage("Сначала выберите корректное значение R");
+        return;
+    }
+
+    const pt = svg.createSVGPoint();
+    pt.x = event.clientX;
+    pt.y = event.clientY;
+
+    const svgCoords = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+    const graphX = svgCoords.x - 220;
+    const graphY = 220 - svgCoords.y;
+
+    const scaleFactor = currentR / 176;
+    const mathX = graphX * scaleFactor;
+    const mathY = graphY * scaleFactor;
+    /*
+        const finalX = mathX.toFixed(2);
+        const finalY = mathY.toFixed(2);*/
+
+    document.getElementById('xValue').value = mathX;
+    document.getElementById('yValue').value = mathY;
+
+    const graphSubmitButton = document.querySelector('input[id$="graphSubmit"]');
+    if (graphSubmitButton) {
+        graphSubmitButton.click();
+    } else {
+        console.error("Кнопка 'Проверить (без валидации)' не найдена.");
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const rSelect = document.getElementById("rValue");
+    const checkButton = document.querySelector('input[value="Проверить"]');
+    const graph = document.getElementById('graph');
+
+    const initialR = rSelect.value;
+    if (checkR(initialR)) {
+        updateSvgValues(initialR);
+        previousRValue = initialR;
+    } else {
+        rSelect.value = 4;
+        updateSvgValues(4);
+        previousRValue = '4';
+    }
+    redrawGraphWithCurrentR();
+
+    rSelect.addEventListener('change', function() {
+        if (checkR(this.value)) {
+            updateSvgValues(this.value);
+            redrawGraphWithCurrentR();
+        }else {
+            rSelect.value = 4;
+            updateSvgValues(4);
+            redrawGraphWithCurrentR();
+        }
+    });
+    if (checkButton) {
+        checkButton.addEventListener('click', (e) => {
+            if (!validate()) {
+                e.preventDefault();
+            }
+        });
+    } else {
+        console.error("Кнопка 'Проверить' не найдена");
+    }
+
+    graph.addEventListener('click', (e) => {
+        if (!graph) {
+            e.preventDefault();
+        }else{
+            clickOnGraph(e);
+        }
+    });
+
+});
+
+function onAjaxSubmit(data){
+    if (data.status === 'success') {
+        redrawGraphWithCurrentR();
+    }
+}
+
+function onAjaxClear(data){
+    if (data.status === 'success') {
+        redrawGraphWithCurrentR();
+    }
+}

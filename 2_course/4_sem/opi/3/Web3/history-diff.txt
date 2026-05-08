@@ -1,0 +1,14 @@
+diff --git a/src/main/java/org/example/Main.java b/src/main/java/org/example/Main.java
+index 9e9bb88..ef2020d 100644
+--- a/src/main/java/org/example/Main.java
++++ b/src/main/java/org/example/Main.java
+@@ -2,7 +2,7 @@ package org.example;
+ 
+ public class Main {
+     public static void main(String[] args) {
+-        System.out.println("hi4");
++        System.out.println("hi4")
+         System.out.println("Version: " + System.getProperty("java.version"));
+     }
+ }
+\ No newline at end of file
